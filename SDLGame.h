@@ -81,11 +81,11 @@ public:
 		return SDL_GetTicks();
 	}
 
+	void closeSDL(); // close SDL
 private:
 	SDLGame(string windowTitle_, int width, int height);
 
 	void initSDL(); // initialize SDL
-	void closeSDL(); // close SDL
 	void initResources(); // initialize the SDLResources object with the data at the top of this file
 	void closeResources(); // close the SDLResources object (frees all memory)
 

@@ -70,12 +70,11 @@ void SpaceWars::initGame() {
 	//game_->getAudioMngr()->setChannelVolume(5, 0);
 	//game_->getAudioMngr()->setChannelVolume(5, 1);
 	
-	
-
 }
 
 void SpaceWars::closeGame() {
 	delete entityManager_;
+	game_->closeSDL();
 }
 
 void SpaceWars::start() {

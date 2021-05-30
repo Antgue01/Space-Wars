@@ -12,7 +12,7 @@
 unique_ptr<SDLGame> SDLGame::instance_;
 
 
-SDLGame::SDLGame(string windowTitle, int width, int height) :	//Se establece el tama�o de la ventana y se inicializa todo
+SDLGame::SDLGame(string windowTitle, int width, int height) :	//Se establece el tamaño de la ventana y se inicializa todo
 		windowTitle_(windowTitle), width_(width), height_(height) {
 	initSDL();
 	initResources();
@@ -20,7 +20,7 @@ SDLGame::SDLGame(string windowTitle, int width, int height) :	//Se establece el 
 
 SDLGame::~SDLGame() {
 	closeResources();
-	closeSDL();
+	//closeSDL();
 }
 
 void SDLGame::initSDL() {		//Inicializacion de SDL
@@ -54,14 +54,13 @@ void SDLGame::initSDL() {		//Inicializacion de SDL
 
 void SDLGame::closeSDL() {		//Cerramos SDL
 
-	//SDL_DestroyRenderer(renderer_);
+	SDL_DestroyRenderer(renderer_);
 	renderer_ = nullptr;
 
-	//SDL_DestroyWindow(window_);
+	SDL_DestroyWindow(window_);
 	window_ = nullptr;
 
 	SDL_Quit();
-	
 }
 
 void SDLGame::initResources() {		//Se inicializan los Managers de recursos
@@ -95,7 +94,7 @@ void SDLGame::initResources() {		//Se inicializan los Managers de recursos
 		audio_->loadSound(sound.id, sound.fileName);
 	}
 
-	for (auto &music : Resources::musics_) {	//Cargamos la M�sica
+	for (auto &music : Resources::musics_) {	//Cargamos la Música
 		audio_->loadMusic(music.id, music.fileName);
 	}
 
@@ -107,4 +106,3 @@ void SDLGame::closeResources() {	//Limpiamos y quitamos los managers
 	delete random_;
 	delete audio_;
 }
-
