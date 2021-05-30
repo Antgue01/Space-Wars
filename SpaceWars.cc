@@ -35,16 +35,17 @@ void SpaceWars::initGame() {
 	Transform *player1TR = player1->addComponent<Transform>();
 	// player1->addComponent<FighterCtrl>();
 	// player1->addComponent<FighterMotion>();
-	player1->addComponent<VesselViewer>(game_->getTextureMngr()->getTexture(Resources::Fighter));
+	player1->addComponent<VesselViewer>(game_->getTextureMngr()->getTexture(Resources::Player1));
 	// Health* fighterHealth = player1->addComponent<Health>(game_->getTextureMngr()->getTexture(Resources::Heart));
-	player1TR->setPos(0, game_->getWindowHeight() / 2 );
-	player1TR->setWH(70, 70);
+	player1TR->setPos(game_->getWindowWidth()/2, game_->getWindowHeight() / 2 );
+	player1TR->setWH(70,70);
 
     Entity* player2= entityManager_->addEntity();
     Transform* player2TR=player2->addComponent<Transform>();
+	player2->addComponent<VesselViewer>(game_->getTextureMngr()->getTexture(Resources::Player2));
+    player2TR->setPos(0,game_->getWindowHeight()/2);
 	player2TR->setWH(70, 70);
-    player2TR->setPosition(game_->getWindowWidth()-player2TR->getW()/2,game_->getWindowHeight()/2);
-	/
+	
 
 
 	// //pool de balas
@@ -65,9 +66,9 @@ void SpaceWars::initGame() {
 	
 
 	//Configuracion del volumen de música y sonido
-	game_->getAudioMngr()->setMusicVolume(40);
-	game_->getAudioMngr()->setChannelVolume(5, 0);
-	game_->getAudioMngr()->setChannelVolume(5, 1);
+	//game_->getAudioMngr()->setMusicVolume(40);
+	//game_->getAudioMngr()->setChannelVolume(5, 0);
+	//game_->getAudioMngr()->setChannelVolume(5, 1);
 	
 	
 
@@ -81,6 +82,7 @@ void SpaceWars::start() {
 	exit_ = false;
 
 	while (!exit_) {
+		
 		Uint32 startTime = game_->getTime();
 
 		handleInput();
@@ -90,6 +92,7 @@ void SpaceWars::start() {
 		Uint32 frameTime = game_->getTime() - startTime;
 		if (frameTime < 10)
 			SDL_Delay(10 - frameTime);
+			
 	}
 }
 

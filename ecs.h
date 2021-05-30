@@ -15,7 +15,7 @@ enum CmpId : CmpIdType {
 	Gun,
 	FighterCtrl,
 	FighterMotion,
-	FighterViewer,
+	VesselViewer,
 	AsteroidPool,
 	AsteroidsViewer,
 	AsteroidsMotion,

@@ -8,7 +8,7 @@ private:
     Texture* t=nullptr;
     Transform* tr = nullptr;
 public:
-    VesselViewer(Texture* t);
+    VesselViewer(Texture* t_);
     virtual ~VesselViewer() { t = nullptr; };
      void init() override;
      void update()override;

@@ -1,9 +1,9 @@
 #include "VesselViewer.h"
 #include "Entity.h"
 
-VesselViewer::VesselViewer(Texture* t) : Component(ecs::VesselViewer)
+VesselViewer::VesselViewer(Texture* t_) : Component(ecs::VesselViewer)
 {
-    t = t;
+    t = t_;
 }
 
 void VesselViewer::init()
