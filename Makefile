@@ -1,23 +1,20 @@
+SOURCES=$(wildcard *.cc)
+BIN=$(SOURCES:%.cc=%)
+OBJ=$(SOURCES:%.cc=%.o)
 CC=g++
-CFLAGS=-g -I.
-DEPS = Socket.h Chat.h
-OBJ = Socket.o Chat.o
-LIBS=-lpthread
+CFLAGS= -g -Wall 
+LIBS=`sdl2-config --cflags --libs` -lpthread -lSDL2 -lSDL2_mixer -lSDL2_image -lSDL2_ttf
 
-%.o: %.cc $(DEPS)
-	$(CC) -g -c -o $@ $< $(CFLAGS)
+all: $(BIN)
 
-all: cs cc
+# %.o: %.cc Makefile
+# 	$(CC) -c $(CFLAGS) -o $@ $< $(LIBS)
 
-cs: $(OBJ) ChatServer.o
-	g++ -o $@ $^ $(CFLAGS) $(LIBS)
-
-cc: $(OBJ) ChatClient.o
-	g++ -o $@ $^ $(CFLAGS) $(LIBS)
+$(BIN): %: %.cc  
+	$(CC) $(CFLAGS) -o  $@ $(SOURCES)  $(LIBS)
 
 
 .PHONY: clean
 
 clean:
-	rm -f *.o cs cc
-
+	-rm $(BIN) $(OBJ)

@@ -7,6 +7,7 @@ Socket::Socket(const char *address, const char *port) : sd(-1)
 {
     //Construir un socket de tipo AF_INET y SOCK_DGRAM usando getaddrinfo.
     //Con el resultado inicializar los miembros sd, sa y sa_len de la clase
+    std::cout << "hola" << std::flush;
     struct addrinfo hints;
     struct addrinfo *result;
     memset(&hints, 0, sizeof(struct addrinfo));
