@@ -1,14 +1,15 @@
 #pragma once
 
-#include <SDL.h>
+#include <SDL2/SDL.h>
 
 #include "ecs.h"
 #include "SDLGame.h"
+#include "Serializable.h"
 
 class Entity;
 
 
-class Component {
+class Component:public Serializable{
 protected:
 	Entity* entity_;
 	SDLGame* game_;

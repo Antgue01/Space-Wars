@@ -11,7 +11,7 @@ all: $(BIN)
 # 	$(CC) -c $(CFLAGS) -o $@ $< $(LIBS)
 
 $(BIN): %: %.cc  
-	$(CC) $(CFLAGS) -o  $@ $(SOURCES)  $(LIBS)
+	$(CC) $(CFLAGS) -o  main $(SOURCES)  $(LIBS)
 
 
 .PHONY: clean

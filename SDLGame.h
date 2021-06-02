@@ -1,6 +1,6 @@
 #pragma once
 
-#include <SDL.h>
+#include <SDL2/SDL.h>
 #include "Resources.h"
 #include "TexturesManager.h"
 #include "AudioManager.h"

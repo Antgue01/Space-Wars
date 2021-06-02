@@ -70,6 +70,14 @@ public:
 		width_ = width;
 		height_ = height;
 	}
+virtual void to_bin() override;
+
+    /**
+     *  Esta función recibe un objeto serializado y lo reconstruye.
+     *    @param data representación binaria del objeto
+     *    @return 0 si éxito -1 en caso contrario
+     */
+    virtual int from_bin(char * data) override;
 
 private:
 	Vector2D position_;

@@ -7,9 +7,9 @@
 #include "Transform.h"
 #include "SDLGame.h"
 #include "VesselViewer.h"
+#include "VesselControl.h"
+#include "VesselMovement.h"
 
-
-#include "SDL_macros.h"
 
 using namespace std;
 
@@ -33,8 +33,8 @@ void SpaceWars::initGame() {
 	//nave
 	Entity* player1 = entityManager_->addEntity();
 	Transform *player1TR = player1->addComponent<Transform>();
-	// player1->addComponent<FighterCtrl>();
-	// player1->addComponent<FighterMotion>();
+	player1->addComponent<VesselControl>(SDLK_d,SDLK_a,SDLK_w);
+	player1->addComponent<VesselMovement>();
 	player1->addComponent<VesselViewer>(game_->getTextureMngr()->getTexture(Resources::Player1));
 	// Health* fighterHealth = player1->addComponent<Health>(game_->getTextureMngr()->getTexture(Resources::Heart));
 	player1TR->setPos(game_->getWindowWidth()/2, game_->getWindowHeight() / 2 );
