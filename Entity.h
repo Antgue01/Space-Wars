@@ -8,17 +8,20 @@
 
 class EntityManager;
 
-class Entity {
+class Entity
+{
 public:
-	Entity(SDLGame *game, EntityManager* mngr);
+	Entity(SDLGame *game, EntityManager *mngr);
 	virtual ~Entity();
 
-	EntityManager* getEntityMangr() {
+	EntityManager *getEntityMangr()
+	{
 		return mngr_;
 	}
 
-	template<typename T, typename ... TArgs>
-	T* addComponent(TArgs&& ...mArgs) {
+	template <typename T, typename... TArgs>
+	T *addComponent(TArgs &&... mArgs)
+	{
 		T *c(new T(std::forward<TArgs>(mArgs)...));
 		std::unique_ptr<Component> uPtr(c);
 		components_.push_back(std::move(uPtr));
@@ -29,31 +32,38 @@ public:
 		return c;
 	}
 
-	template<typename T>
-	T* getComponent(ecs::CmpIdType id) {
-		return static_cast<T*>(componentsArray_[id]);
+	template <typename T>
+	T *getComponent(ecs::CmpIdType id)
+	{
+		return static_cast<T *>(componentsArray_[id]);
 	}
 
-	bool hasComponent(ecs::CmpIdType id) {
+	bool hasComponent(ecs::CmpIdType id)
+	{
 		return componentsArray_[id] != nullptr;
 	}
 
-	void update() {
-		for (auto &c : components_) {
+	void update()
+	{
+		for (auto &c : components_)
+		{
 			c->update();
 		}
 	}
 
-	void draw() {
-		for (auto &c : components_) {
+	void draw()
+	{
+		for (auto &c : components_)
+		{
 			c->draw();
 		}
 	}
+	std::vector<unique_ptr<Component>> &getComponents() { return components_; }
+
 private:
 	SDLGame *game_;
-	EntityManager* mngr_;
+	EntityManager *mngr_;
 
 	std::vector<unique_ptr<Component>> components_;
-	std::array<Component*,ecs::maxComponents> componentsArray_ = {};
+	std::array<Component *, ecs::maxComponents> componentsArray_ = {};
 };
-

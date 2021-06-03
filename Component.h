@@ -1,45 +1,52 @@
 #pragma once
 
 #include <SDL2/SDL.h>
-
+#include "Message.h"
 #include "ecs.h"
 #include "SDLGame.h"
 #include "Serializable.h"
 
 class Entity;
 
-
-class Component:public Serializable{
+class Component : public Serializable
+{
 protected:
-	Entity* entity_;
-	SDLGame* game_;
+	Entity *entity_;
+	SDLGame *game_;
 	ecs::CmpId id_;
+
 public:
 	Component(ecs::CmpId id);
 	virtual ~Component();
 
-	void setEntity(Entity* entity) {
+	void setEntity(Entity *entity)
+	{
 		entity_ = entity;
 	}
 
-	void setGame(SDLGame* game) {
+	void setGame(SDLGame *game)
+	{
 		game_ = game;
 	}
 
-	void setId(ecs::CmpId id) {
+	void setId(ecs::CmpId id)
+	{
 		id_ = id;
 	}
 
-	ecs::CmpId getId() const {
+	ecs::CmpId getId() const
+	{
 		return id_;
 	}
 
-	virtual void init() {
+	virtual void init()
+	{
 	}
-	virtual void update() {
+	virtual void update()
+	{
 	}
-	virtual void draw() {
+	virtual void draw()
+	{
 	}
-
+	virtual void Receive(Message &msg) {}
 };
-
