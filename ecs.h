@@ -14,6 +14,7 @@ enum CmpId : CmpIdType {
 	Health,
 	Gun,
 	VesselControl,
+	NetVesselControl,
 	VesselMovement,
 	VesselViewer,
 	AsteroidPool,

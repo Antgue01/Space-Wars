@@ -14,7 +14,7 @@ void VesselControl::update()
     //Si se ha tocado cualquier tecla
     if (ih->keyDownEvent())
     {
-        //Toto Derecha
+        //Roto Derecha
         if (ih->isKeyDown(right))
         {
             tr->setRot(tr->getRot() + 5);

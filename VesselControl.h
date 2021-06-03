@@ -1,13 +1,13 @@
 #pragma once
-#include"Component.h"
-#include"SDL_macros.h"
-#include"Entity.h"
-#include"InputHandler.h"
-#include"Transform.h"
-class VesselControl:public Component
+#include "Component.h"
+#include "SDL_macros.h"
+#include "Entity.h"
+#include "InputHandler.h"
+#include "Transform.h"
+class VesselControl : public Component
 {
 private:
-	Transform* tr;
+	Transform *tr;
 	SDL_Keycode right;
 	SDL_Keycode left;
 	SDL_Keycode up;
@@ -16,7 +16,9 @@ private:
 
 public:
 	VesselControl(SDL_Keycode right, SDL_Keycode left, SDL_Keycode up);
-	virtual ~VesselControl(){}
+	virtual ~VesselControl() {}
 	void init() override;
 	void update() override;
+	virtual void to_bin() override {}
+	virtual int from_bin(char *data) override { return 0; }
 };
