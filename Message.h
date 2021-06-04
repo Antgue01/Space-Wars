@@ -1,17 +1,20 @@
 #pragma once
 #include "Socket.h"
 #include "Serializable.h"
+
+class Message
+{
+public:
 enum type
 {
     Count,
     NetVesselMovement
 };
-class Message
-{
-public:
-    Message(Serializable *obj, type t) : _obj(obj), _myType(t) {}
-    void send(Socket sock);
 
+    Message(Serializable *obj, type t) : _obj(obj), _myType(t) {}
+    void send(Socket src,Socket dest);
+    inline Serializable* getObj(){return _obj;}
+    inline void setObj(Serializable* s){_obj=s;}
 private:
     type _myType;
     Serializable *_obj;

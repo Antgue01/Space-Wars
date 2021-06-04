@@ -1,5 +1,5 @@
 #include "NetVesselControl.h"
-NetVesselControl::NetVesselControl(SDL_Keycode right, SDL_Keycode left, SDL_Keycode up) : Component(ecs::NetVesselControl), right(right), left(left), up(up), thrust(1), speed(0) {}
+NetVesselControl::NetVesselControl(SDL_Keycode right, SDL_Keycode left, SDL_Keycode up) : Component(ecs::NetVesselControl,type::NetVesselMovement), right(right), left(left), up(up), thrust(1), speed(0) {}
 
 void NetVesselControl::init()
 {
@@ -38,7 +38,7 @@ void NetVesselControl::update()
 void NetVesselControl::to_bin()
 {
 
-    int size = sizeof(bool) * 3;
+    int size = sizeof(bool) * 3 + sizeof(type);
     alloc_data(size);
     memset(_data, 0, size);
     char *aux = _data;
@@ -50,6 +50,8 @@ void NetVesselControl::to_bin()
     aux += sizeof(bool);
     auxBool = pressedKeys.at(2);
     memcpy(aux, &auxBool, sizeof(bool));
+    aux+= sizeof(bool);
+	memcpy(aux,&type_,sizeof(type));
 }
 int NetVesselControl::from_bin(char *data)
 {
@@ -58,7 +60,7 @@ int NetVesselControl::from_bin(char *data)
         std::cout << "Error on deserialization, empty object received\n";
         return -1;
     }
-    int size = sizeof(bool) * 3;
+    int size = sizeof(bool) * 3 + sizeof(type);
 
     alloc_data(size);
 
@@ -75,5 +77,7 @@ int NetVesselControl::from_bin(char *data)
     aux += sizeof(bool);
     memcpy(&auxBool, aux, sizeof(bool));
     pressedKeys.at(2) = auxBool;
+    aux+= sizeof(bool);
+	memcpy(&type_,aux,sizeof(type));
     return 0;
 }

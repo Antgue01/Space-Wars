@@ -1,17 +1,13 @@
-#include "Message.h"
-#include <memory.h>
-void Message::send(Socket src,Socket dest)
-{
-    src.send(*_obj, dest);
-}
-void CountMessage::to_bin()
+#include "LoginMessage.h"
+
+void LoginMessage::to_bin()
 {
     int size = sizeof(int);
     alloc_data(size);
     memset(_data, 0, size);
-    memcpy(_data, &_numMessages, sizeof(int));
+    memcpy(_data, &a, sizeof(int));
 }
-int CountMessage::from_bin(char *bobj)
+int LoginMessage::from_bin(char *bobj)
 {
     if (bobj == 0)
     {
@@ -21,5 +17,5 @@ int CountMessage::from_bin(char *bobj)
     int size = sizeof(int);
     alloc_data(size);
     memcpy(static_cast<void *>(_data), bobj, size);
-    memcpy(&_numMessages, _data, sizeof(int));
+    memcpy(&a, _data, sizeof(int));
 }

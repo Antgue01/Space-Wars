@@ -1,5 +1,5 @@
 #include "VesselControl.h"
-VesselControl::VesselControl(SDL_Keycode right, SDL_Keycode left, SDL_Keycode up) : Component(ecs::VesselControl), right(right), left(left), up(up), thrust(1), speed(0) {}
+VesselControl::VesselControl(SDL_Keycode right, SDL_Keycode left, SDL_Keycode up) : Component(ecs::VesselControl,type::NotSerialize), right(right), left(left), up(up), thrust(1), speed(0) {}
 
 void VesselControl::init()
 {

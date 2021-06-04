@@ -9,22 +9,30 @@
 #include "VesselViewer.h"
 #include "VesselControl.h"
 #include "VesselMovement.h"
-
+#include "LoginMessage.h"
 
 using namespace std;
 
-SpaceWars::SpaceWars() :
+SpaceWars::SpaceWars(const char* host,const char* port,bool client) :
 		game_(nullptr), //
 		entityManager_(nullptr), //
 		exit_(false) {
-	initGame();
+
+	if(client)initGameClient(host,port);
+	else initServer(host,port);
 }
 
 SpaceWars::~SpaceWars() {
 	closeGame();
 }
 
-void SpaceWars::initGame() {
+void SpaceWars::initGameClient(const char* host,const char* port) {
+
+	LoginMessage msg;
+	clientSd = new Socket(host,port);
+	clientSd->send(msg,*clientSd);
+	msgQueue = new MessageQueue(*clientSd,*clientSd);
+	
 
 	game_ = SDLGame::init("SpaceWars", _WINDOW_WIDTH_, _WINDOW_HEIGHT_);
 
@@ -46,7 +54,7 @@ void SpaceWars::initGame() {
     player2TR->setPos(0,game_->getWindowHeight()/2);
 	player2TR->setWH(70, 70);
 	
-
+	msgQueue->init(entityManager_->getEntities());
 
 	// //pool de balas
 	// Entity* bullets = entityManager_->addEntity();
@@ -72,8 +80,24 @@ void SpaceWars::initGame() {
 	
 }
 
+void SpaceWars::initServer(const char* host,const char* port)
+{
+	serverSd = new Socket(host,port);
+	serverSd->bind();
+
+	LoginMessage msg;
+	serverSd->recv(msg,clientSd);
+
+	msgQueue->init(entityManager_->getEntities());
+
+
+}
+
 void SpaceWars::closeGame() {
 	delete entityManager_;
+	delete clientSd;
+	delete serverSd;
+	delete msgQueue;
 	game_->closeSDL();
 }
 
@@ -83,7 +107,7 @@ void SpaceWars::start() {
 	while (!exit_) {
 		
 		Uint32 startTime = game_->getTime();
-
+		//smsgQueue->receive();
 		handleInput();
 		update();
 		render();

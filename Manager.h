@@ -12,7 +12,7 @@ public:
 	void update();
 	void draw();
 	Entity* addEntity();
-
+	std::vector<std::unique_ptr<Entity>>& getEntities(){return entities;}
 
 private:
 	SDLGame* game_;

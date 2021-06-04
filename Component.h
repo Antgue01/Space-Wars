@@ -10,13 +10,23 @@ class Entity;
 
 class Component : public Serializable
 {
+
 protected:
+enum type
+{
+	NotSerialize,
+    Count,
+	VesselMovement,
+	TransformNet,
+    NetVesselMovement
+};
 	Entity *entity_;
 	SDLGame *game_;
 	ecs::CmpId id_;
+	type type_;
 
 public:
-	Component(ecs::CmpId id);
+	Component(ecs::CmpId id,type type);
 	virtual ~Component();
 
 	void setEntity(Entity *entity)
@@ -48,5 +58,5 @@ public:
 	virtual void draw()
 	{
 	}
-	virtual void Receive(Message &msg) {}
+	virtual void Receive(Message::type type) {}
 };

@@ -2,11 +2,11 @@
 void MessageQueue::flush()
 {
     CountMessage count(_messagesToSend.size());
-    Message initial(&count, Count);
-    initial.send(_socket);
+    Message initial(&count, Message::type::Count);
+    initial.send(_mySocket,_otherSocket);
     while (!_messagesToSend.empty())
     {
-        _messagesToSend.front()->send(_socket);
+        _messagesToSend.front()->send(_mySocket,_otherSocket);
         _messagesToSend.pop();
     }
 }
@@ -20,14 +20,15 @@ void MessageQueue::init(std::vector<unique_ptr<Entity>> &entities)
         }
     }
 }
-void MessageQueue::receive()
+void MessageQueue::receive(Message::type type)
 {
     CountMessage count(0);
-    if (_socket.recv(count) != 0)
+    if (_mySocket.recv(count) != 0)
         for (int i = 0; i < count.getNumMessages(); i++)
         {
-            Message* msg;
-            _socket.recv(*msg);
+            Serializable* seri;
+            Message* msg = new Message(seri,type);
+            _mySocket.recv(*seri);
             _messagesToReceive.push(msg);
         }
 }

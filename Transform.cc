@@ -1,6 +1,6 @@
 #include "Transform.h"
 
-Transform::Transform() : Component(ecs::Transform), position_(), //
+Transform::Transform() : Component(ecs::Transform,type::TransformNet), position_(), //
 						 velocity_(),							 //
 						 width_(),								 //
 						 height_(),								 //
@@ -9,7 +9,7 @@ Transform::Transform() : Component(ecs::Transform), position_(), //
 }
 
 Transform::Transform(Vector2D pos, Vector2D vel, double width,
-					 double height, double rotation) : Component(ecs::Transform), position_(pos), //
+					 double height, double rotation) : Component(ecs::Transform,type::TransformNet), position_(pos), //
 													   velocity_(vel),							  //
 													   width_(width),							  //
 													   height_(height),							  //
@@ -18,7 +18,7 @@ Transform::Transform(Vector2D pos, Vector2D vel, double width,
 }
 void Transform::to_bin()
 {
-	int size = sizeof(double) * 7;
+	int size = sizeof(double) * 7 + sizeof(type);
 	alloc_data(size);
 	memset(_data, 0, size);
 	char *aux = _data;
@@ -39,6 +39,8 @@ void Transform::to_bin()
 	memcpy(aux, &height_, sizeof(double));
 	aux += sizeof(double);
 	memcpy(aux, &rotation_, sizeof(double));
+	aux+= sizeof(double);
+	memcpy(aux,&type_,sizeof(type));
 }
 int Transform::from_bin(char *bobj)
 {
@@ -47,7 +49,7 @@ int Transform::from_bin(char *bobj)
 		std::cout << "Error on deserialization, empty object received\n";
 		return -1;
 	}
-	int size = sizeof(double) * 7;
+	int size = sizeof(double) * 7 + sizeof(type);
 
 	alloc_data(size);
 
@@ -73,6 +75,8 @@ int Transform::from_bin(char *bobj)
 	memcpy(&height_, aux, sizeof(double));
 	aux += sizeof(double);
 	memcpy(&rotation_, aux, sizeof(double));
+	aux+= sizeof(double);
+	memcpy(&type_,aux,sizeof(type));
 
 	return 0;
 }
