@@ -1,5 +1,5 @@
 #include "NetVesselControl.h"
-NetVesselControl::NetVesselControl(SDL_Keycode right, SDL_Keycode left, SDL_Keycode up) : Component(ecs::NetVesselControl,type::NetVesselMovement), right(right), left(left), up(up), thrust(1), speed(0) {}
+NetVesselControl::NetVesselControl(SDL_Keycode right, SDL_Keycode left, SDL_Keycode up) : Component(ecs::NetVesselControl, type::NetVesselMovement), right(right), left(left), up(up), thrust(1), speed(0) {}
 
 void NetVesselControl::init()
 {
@@ -50,8 +50,8 @@ void NetVesselControl::to_bin()
     aux += sizeof(bool);
     auxBool = pressedKeys.at(2);
     memcpy(aux, &auxBool, sizeof(bool));
-    aux+= sizeof(bool);
-	memcpy(aux,&type_,sizeof(type));
+    aux += sizeof(bool);
+    memcpy(aux, &type_, sizeof(type));
 }
 int NetVesselControl::from_bin(char *data)
 {
@@ -67,6 +67,11 @@ int NetVesselControl::from_bin(char *data)
     memcpy(static_cast<void *>(_data), data, size);
 
     //Reconstruir la clase usando el buffer _data
+
+    return 0;
+}
+void NetVesselControl::deserialize()
+{
     char *aux = _data;
     bool auxBool;
     memcpy(&auxBool, aux, sizeof(bool));
@@ -77,7 +82,6 @@ int NetVesselControl::from_bin(char *data)
     aux += sizeof(bool);
     memcpy(&auxBool, aux, sizeof(bool));
     pressedKeys.at(2) = auxBool;
-    aux+= sizeof(bool);
-	memcpy(&type_,aux,sizeof(type));
-    return 0;
+    aux += sizeof(bool);
+    memcpy(&type_, aux, sizeof(type));
 }

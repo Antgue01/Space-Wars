@@ -28,5 +28,6 @@ public:
     CountMessage(int num) : _numMessages(num) {}
     virtual void to_bin();
     virtual int from_bin(char *bobj);
+    virtual void deserialize(char* data)override {}
     int getNumMessages() { return _numMessages; }
 };

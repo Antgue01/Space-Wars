@@ -78,6 +78,8 @@ virtual void to_bin() override;
      *    @return 0 si éxito -1 en caso contrario
      */
     virtual int from_bin(char * data) override;
+	virtual void deserialize(char* readNext) override;
+
 
 private:
 	Vector2D position_;

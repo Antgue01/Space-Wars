@@ -21,4 +21,5 @@ public:
 	void update() override;
 	virtual void to_bin() override;
     virtual int from_bin(char * data) override;
+	virtual void deserialize(char* data) override;
 };

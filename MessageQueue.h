@@ -7,18 +7,19 @@ class MessageQueue
 {
 
 public:
-    MessageQueue(Socket mySocket,Socket otherSocket):_mySocket(mySocket),_otherSocket(otherSocket){}
-    inline void addMsg(Message *msg) { _messagesToSend.push(msg); }
-    void flush();
-    void receive(Message::type type);
+    MessageQueue(Socket mySocket,Socket otherSocket):_receiveSocket(mySocket),_sendSocket(otherSocket){}
+    inline void addMsg(Serializable *msg) { _messagesToSend.push(msg); }
+    void flushSend();
+    void flushReceive();
+    void receive();
     void init(std::vector<unique_ptr<Entity>> &entities);
     void setComponents(std::vector<Component*>& cmps){_components = cmps;}
 
 private:
-    std::queue<Message *> _messagesToSend;
-    std::queue<Message *> _messagesToReceive;
-    Socket _mySocket;
-    Socket _otherSocket;
+    std::queue<Serializable *> _messagesToSend;
+    std::queue<Serializable *> _messagesToReceive;
+    Socket _receiveSocket;
+    Socket _sendSocket;
 
     std::vector<Component *> _components;
 };

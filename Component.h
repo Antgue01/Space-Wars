@@ -58,5 +58,5 @@ public:
 	virtual void draw()
 	{
 	}
-	virtual void Receive(Message::type type) {}
+	virtual void Receive(Serializable* msg);
 };
