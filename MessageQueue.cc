@@ -1,8 +1,10 @@
 #include "MessageQueue.h"
+#include "Message.h"
+
 void MessageQueue::flushSend()
 {
     CountMessage count(_messagesToSend.size());
-    Message initial(&count, Message::type::Count);
+    Message initial(&count, netType::Count);
     initial.send(_receiveSocket, _sendSocket);
     while (!_messagesToSend.empty())
     {
@@ -16,22 +18,16 @@ void MessageQueue::flushReceive()
     while (!_messagesToReceive.empty())
     {
 
-        for (Component *component : _components)
+        for (auto& entity : _entities)
         {
-            component->Receive(_messagesToReceive.front());
+            entity->Receive(_messagesToReceive.front());
         }
         _messagesToReceive.pop();
     }
 }
-void MessageQueue::init(std::vector<unique_ptr<Entity>> &entities)
+void MessageQueue::init(std::list<Entity*> &entities)
 {
-    for (auto &entity : entities)
-    {
-        for (auto &cmp : (*entity).getComponents())
-        {
-            _components.push_back(cmp.get());
-        }
-    }
+    _entities = entities;
 }
 void MessageQueue::receive()
 {

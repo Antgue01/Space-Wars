@@ -1,6 +1,7 @@
 #include "Message.h"
 #include <memory.h>
-void Message::send(Socket src,Socket dest)
+#include "Component.h"
+void Message::send(Socket src, Socket dest)
 {
     src.send(*_obj, dest);
 }
@@ -23,3 +24,4 @@ int CountMessage::from_bin(char *bobj)
     memcpy(static_cast<void *>(_data), bobj, size);
     memcpy(&_numMessages, _data, sizeof(int));
 }
+

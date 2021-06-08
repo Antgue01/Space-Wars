@@ -18,7 +18,7 @@ int LoginMessage::from_bin(char *bobj)
     alloc_data(size);
     memcpy(static_cast<void *>(_data), bobj, size);
 }
-void LoginMessage::deserialize()
+void LoginMessage::deserialize(char* data)
 {
     memcpy(&a, _data, sizeof(int));
 }

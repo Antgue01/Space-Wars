@@ -6,6 +6,13 @@ EntityManager::EntityManager(SDLGame *game) :
 }
 
 EntityManager::~EntityManager() {
+	for (auto &ent : entities)
+	{
+		delete ent;
+
+	}
+	entities.clear();
+	
 }
 
 void EntityManager::update() {
@@ -20,9 +27,10 @@ void EntityManager::draw() {
 	}
 }
 
-Entity* EntityManager::addEntity() {
-	Entity* e = new Entity(game_,this);
-	std::unique_ptr<Entity> uPtr( e );
-	entities.emplace_back(std::move(uPtr));
-	return e;
+void EntityManager::addEntity(Entity* ent) {
+	// Entity* e = new Entity(game_,this);
+	// std::unique_ptr<Entity> uPtr( /*e*/ent );
+	// entities.emplace_back(std::move(uPtr));
+	entities.emplace_back(ent);
+	// return e;
 }

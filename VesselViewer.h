@@ -9,12 +9,12 @@ private:
     Transform *tr = nullptr;
 
 public:
-    VesselViewer(Texture *t_);
+    VesselViewer(MessageQueue* q,Texture *t_);
     virtual ~VesselViewer() { t = nullptr; };
     void init() override;
     void update() override;
     void draw() override;
     virtual void to_bin() override {}
     virtual int from_bin(char *data) override {return 0;}
-	virtual void deserialize() override {}
+	virtual void deserialize(char* data) override {}
 };

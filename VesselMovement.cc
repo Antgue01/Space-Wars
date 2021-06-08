@@ -1,6 +1,6 @@
 #include "VesselMovement.h"
 
-VesselMovement::VesselMovement() : Component(ecs::VesselMovement,type::VesselMovement)
+VesselMovement::VesselMovement(MessageQueue* q) : Component(ecs::VesselMovement,netType::vesselMovement,q)
 {
 }
 

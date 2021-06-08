@@ -1,32 +1,25 @@
 #pragma once
 
 #include <SDL2/SDL.h>
-#include "Message.h"
 #include "ecs.h"
 #include "SDLGame.h"
+class MessageQueue;
 #include "Serializable.h"
-
 class Entity;
 
+enum netType
+{
+	NotSerialize,
+	Count,
+	vesselMovement,
+	TransformNet,
+	netVesselControl
+};
 class Component : public Serializable
 {
 
-protected:
-enum type
-{
-	NotSerialize,
-    Count,
-	VesselMovement,
-	TransformNet,
-    NetVesselMovement
-};
-	Entity *entity_;
-	SDLGame *game_;
-	ecs::CmpId id_;
-	type type_;
-
 public:
-	Component(ecs::CmpId id,type type);
+	Component(ecs::CmpId id, netType netType, MessageQueue *q);
 	virtual ~Component();
 
 	void setEntity(Entity *entity)
@@ -58,5 +51,12 @@ public:
 	virtual void draw()
 	{
 	}
-	virtual void Receive(Serializable* msg);
+	virtual void Receive(Serializable *msg);
+
+protected:
+	Entity *entity_;
+	SDLGame *game_;
+	ecs::CmpId id_;
+	netType type_;
+	MessageQueue *queue_;
 };

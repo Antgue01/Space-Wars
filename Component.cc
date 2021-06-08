@@ -1,22 +1,24 @@
 #include "Component.h"
+#include "MessageQueue.h"
 
-Component::Component(ecs::CmpId id, type type) : entity_(nullptr), //
+Component::Component(ecs::CmpId id, netType netType,MessageQueue* q) : entity_(nullptr), //
 												 game_(nullptr),   //
 												 id_(id),		   //
-												 type_(type)	   //
+												 type_(netType),
+												 queue_(q)	   //
 {
 }
 
-void Component::Receive(Serializable *msg)
+char* Component::Receive(Serializable *msg)
 {
-	type t;
+	netType t;
 	char *aux = msg->data();
-	memcpy(&t, aux, sizeof(type));
+	memcpy(&t, aux, sizeof(netType));
 	if (t == type_)
 	{
-		aux += sizeof(type);
-		deserialize(aux);
+		aux += sizeof(netType);
 	}
+	return aux;
 }
 Component::~Component()
 {

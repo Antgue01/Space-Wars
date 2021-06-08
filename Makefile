@@ -7,11 +7,11 @@ LIBS=`sdl2-config --cflags --libs` -lpthread -lSDL2 -lSDL2_mixer -lSDL2_image -l
 
 all: $(BIN)
 
-# %.o: %.cc Makefile
-# 	$(CC) -c $(CFLAGS) -o $@ $< $(LIBS)
+%.o: %.cc Makefile
+	$(CC) -c $(CFLAGS) -o $@ $< $(LIBS)
 
-$(BIN): %: %.cc  
-	$(CC) $(CFLAGS) -o  main $(SOURCES)  $(LIBS)
+$(BIN):$(OBJ) 
+	$(CC) $(CFLAGS) -o  main $(OBJ)  $(LIBS)
 
 
 .PHONY: clean

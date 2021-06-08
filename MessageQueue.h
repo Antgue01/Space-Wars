@@ -1,7 +1,8 @@
 #pragma once
 #include <queue>
+
 #include "Socket.h"
-#include "Message.h"
+class Message;
 #include "Entity.h"
 class MessageQueue
 {
@@ -12,14 +13,13 @@ public:
     void flushSend();
     void flushReceive();
     void receive();
-    void init(std::vector<unique_ptr<Entity>> &entities);
-    void setComponents(std::vector<Component*>& cmps){_components = cmps;}
+    void init(std::list<Entity*> &entities);
 
 private:
-    std::queue<Serializable *> _messagesToSend;
-    std::queue<Serializable *> _messagesToReceive;
+    std::queue<Serializable*> _messagesToSend;
+    std::queue<Serializable*> _messagesToReceive;
     Socket _receiveSocket;
     Socket _sendSocket;
 
-    std::vector<Component *> _components;
+    std::list<Entity*> _entities;
 };

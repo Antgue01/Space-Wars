@@ -18,13 +18,13 @@ int main(int argc, char** argv)
 
 		if(argc==4)
 		{
-			bool isClient = argv[3]==0;
+			bool isClient = std::atoi(argv[3])==1;
 			SpaceWars s(argv[1],argv[2],isClient);
 			s.start();
 		}
 		else
 		{
-			std::cout<<"Usage: ./main host port isClient(0 or 1)\n";
+			std::cout<<"Usage: main <host> <port> <isClient> (1 is client or 0 is server)\n";
 		}
 
 	} catch (std::string &e) { // catch errors thrown as strings

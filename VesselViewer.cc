@@ -1,7 +1,7 @@
 #include "VesselViewer.h"
 #include "Entity.h"
 
-VesselViewer::VesselViewer(Texture* t_) : Component(ecs::VesselViewer,type::NotSerialize)
+VesselViewer::VesselViewer(MessageQueue *q,Texture *t_) : Component(ecs::VesselViewer, netType::NotSerialize, q)
 {
     t = t_;
 }
@@ -16,6 +16,6 @@ void VesselViewer::update()
 //Dibuja la nave con su posicion y rotacion
 void VesselViewer::draw()
 {
-    SDL_Rect dest = {tr->getPos().getX(),tr->getPos().getY(),tr->getW(),tr->getH() };
+    SDL_Rect dest = {tr->getPos().getX(), tr->getPos().getY(), tr->getW(), tr->getH()};
     t->render(dest, tr->getRot());
 }

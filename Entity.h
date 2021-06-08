@@ -5,10 +5,10 @@
 #include "Component.h"
 #include "Manager.h"
 #include "SDLGame.h"
-
+#include "Serializable.h"
 class EntityManager;
 
-class Entity
+class Entity:public Serializable
 {
 public:
 	Entity(SDLGame *game, EntityManager *mngr);
@@ -19,51 +19,52 @@ public:
 		return mngr_;
 	}
 
-	template <typename T, typename... TArgs>
-	T *addComponent(TArgs &&... mArgs)
-	{
-		T *c(new T(std::forward<TArgs>(mArgs)...));
-		std::unique_ptr<Component> uPtr(c);
-		components_.push_back(std::move(uPtr));
-		componentsArray_[c->getId()] = c;
-		c->setEntity(this);
-		c->setGame(game_);
-		c->init();
-		return c;
-	}
+	// template <typename T, typename... TArgs>
+	// T *addComponent(TArgs &&... mArgs)
+	// {
+	// 	T *c(new T(std::forward<TArgs>(mArgs)...));
+	// 	std::unique_ptr<Component> uPtr(c);
+	// 	components_.push_back(std::move(uPtr));
+	// 	componentsArray_[c->getId()] = c;
+	// 	c->setEntity(this);
+	// 	c->setGame(game_);
+	// 	c->init();
+	// 	return c;
+	// }
 
-	template <typename T>
-	T *getComponent(ecs::CmpIdType id)
-	{
-		return static_cast<T *>(componentsArray_[id]);
-	}
+	// template <typename T>
+	// T *getComponent(ecs::CmpIdType id)
+	// {
+	// 	return static_cast<T *>(componentsArray_[id]);
+	// }
 
-	bool hasComponent(ecs::CmpIdType id)
-	{
-		return componentsArray_[id] != nullptr;
-	}
+	// bool hasComponent(ecs::CmpIdType id)
+	// {
+	// 	return componentsArray_[id] != nullptr;
+	// }
 
-	void update()
-	{
-		for (auto &c : components_)
-		{
-			c->update();
-		}
-	}
+	virtual void update() = 0;
+	// {
+	// 	for (auto &c : components_)
+	// 	{
+	// 		c->update();
+	// 	}
+	// }
 
-	void draw()
-	{
-		for (auto &c : components_)
-		{
-			c->draw();
-		}
-	}
-	std::vector<unique_ptr<Component>> &getComponents() { return components_; }
+	virtual void draw() = 0;
+	// {
+	// 	for (auto &c : components_)
+	// 	{
+	// 		c->draw();
+	// 	}
+	// }
+	// std::vector<unique_ptr<Component>> &getComponents() { return components_; }
+	virtual void Receive(Serializable *msg)=0;
 
 private:
 	SDLGame *game_;
 	EntityManager *mngr_;
 
-	std::vector<unique_ptr<Component>> components_;
-	std::array<Component *, ecs::maxComponents> componentsArray_ = {};
+	// std::vector<unique_ptr<Component>> components_;
+	// std::array<Component *, ecs::maxComponents> componentsArray_ = {};
 };
