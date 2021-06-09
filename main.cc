@@ -1,6 +1,5 @@
 #include <iostream>
 #include "SpaceWars.h"
-#include "SDLGame.h"
 
 void Server(char* host, char* port)
 {
@@ -14,6 +13,7 @@ void Client(char* host, char* port)
 
 int main(int argc, char** argv)
 {  
+
     try {
 
 		if(argc==4)

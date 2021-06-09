@@ -1,4 +1,5 @@
-#include "VesselViewer.h"
+
+/*#include "VesselViewer.h"
 #include "Entity.h"
 
 VesselViewer::VesselViewer(MessageQueue *q,Texture *t_) : Component(ecs::VesselViewer, netType::NotSerialize, q)
@@ -19,3 +20,4 @@ void VesselViewer::draw()
     SDL_Rect dest = {tr->getPos().getX(), tr->getPos().getY(), tr->getW(), tr->getH()};
     t->render(dest, tr->getRot());
 }
+*/

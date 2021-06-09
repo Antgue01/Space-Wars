@@ -1,3 +1,4 @@
+/*
 #pragma once
 #include "Component.h"
 #include "Texture.h"
@@ -18,3 +19,4 @@ public:
     virtual int from_bin(char *data) override {return 0;}
 	virtual void deserialize(char* data) override {}
 };
+*/

@@ -1,3 +1,4 @@
+/*
 #pragma once
 
 #include "Vector2D.h"
@@ -90,11 +91,7 @@ public:
 	}
 	virtual void to_bin() override;
 
-	/**
-     *  Esta función recibe un objeto serializado y lo reconstruye.
-     *    @param data representación binaria del objeto
-     *    @return 0 si éxito -1 en caso contrario
-     */
+	
 	virtual int from_bin(char *data) override;
 	virtual void deserialize(char *readNext) override;
 	virtual char* Receive(Serializable* msg) override;
@@ -105,3 +102,4 @@ private:
 	double height_;
 	double rotation_;
 };
+*/

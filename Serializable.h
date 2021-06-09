@@ -44,7 +44,7 @@ public:
      */
     virtual int from_bin(char *data) = 0;
     ///Deserializa a partir del puntero readNext
-    virtual void deserialize(char* readNext) = 0;
+   // virtual void deserialize(char* readNext) = 0;
     /**
      *  Devuelve un puntero al buffer interno con la representación del objeto.
      *  Debe inicializarse previamente via Serializable::to_bin()

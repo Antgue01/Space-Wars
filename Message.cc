@@ -1,6 +1,5 @@
 #include "Message.h"
 #include <memory.h>
-#include "Component.h"
 void Message::send(Socket src, Socket dest)
 {
     src.send(*_obj, dest);

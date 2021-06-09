@@ -1,4 +1,4 @@
-#include "NetVesselControl.h"
+/*#include "NetVesselControl.h"
 NetVesselControl::NetVesselControl(MessageQueue *q, SDL_Keycode right, SDL_Keycode left, SDL_Keycode up, bool sends) : Component(ecs::NetVesselControl, netType::netVesselControl, q), right(right), left(left), up(up), thrust(1), speed(0), _sends(sends) {}
 
 void NetVesselControl::init()
@@ -119,3 +119,4 @@ char *NetVesselControl::Receive(Serializable *msg)
         return "";
     }
 }
+*/

@@ -2,7 +2,6 @@
 
 #include <iostream>
 #include <array>
-#include "Component.h"
 #include "Manager.h"
 #include "SDLGame.h"
 #include "Serializable.h"
@@ -42,7 +41,7 @@ public:
 	// {
 	// 	return componentsArray_[id] != nullptr;
 	// }
-
+	
 	virtual void update() = 0;
 	// {
 	// 	for (auto &c : components_)
@@ -61,7 +60,7 @@ public:
 	// std::vector<unique_ptr<Component>> &getComponents() { return components_; }
 	virtual void Receive(Serializable *msg)=0;
 
-private:
+protected:
 	SDLGame *game_;
 	EntityManager *mngr_;
 

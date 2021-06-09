@@ -32,7 +32,7 @@ private:
     Socket* serverSd;
     MessageQueue* msgQueue;
     bool exit_;
-    std::vector<Component*> components;
+    
     const static int _WINDOW_WIDTH_ = 640;
     const static int _WINDOW_HEIGHT_ = 480;
 

@@ -1,4 +1,5 @@
-#include "Transform.h"
+
+/*#include "Transform.h"
 
 Transform::Transform(MessageQueue *q) : Component(ecs::Transform, netType::TransformNet, q), position_(), //
 										velocity_(),													  //
@@ -89,4 +90,4 @@ char *Transform::Receive(Serializable *msg)
 }
 Transform::~Transform()
 {
-}
+}*/

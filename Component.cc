@@ -1,4 +1,4 @@
-#include "Component.h"
+/*#include "Component.h"
 #include "MessageQueue.h"
 
 Component::Component(ecs::CmpId id, netType netType,MessageQueue* q) : entity_(nullptr), //
@@ -23,3 +23,4 @@ char* Component::Receive(Serializable *msg)
 Component::~Component()
 {
 }
+*/

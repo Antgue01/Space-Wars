@@ -1,18 +1,17 @@
 #pragma once
 #include "Socket.h"
 #include "Serializable.h"
-#include "Component.h"
 
 class Message
 {
 public:
-    Message(Serializable *obj, netType t) : _obj(obj), _myType(t) {}
+    Message(Serializable *obj, int t) : _obj(obj), _myType(t) {}
     void send(Socket src, Socket dest);
     inline Serializable *getObj() { return _obj; }
     inline void setObj(Serializable *s) { _obj = s; }
 
 private:
-    netType _myType;
+    int _myType;
     Serializable *_obj;
 };
 

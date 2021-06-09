@@ -1,3 +1,4 @@
+/*
 #include "VesselControl.h"
 #include "NetVesselControl.h"
 VesselControl::VesselControl(MessageQueue*q,SDL_Keycode right, SDL_Keycode left, SDL_Keycode up) : Component(ecs::VesselControl, netType::NotSerialize,q), right(right), left(left), up(up), thrust(1), speed(0) {}
@@ -32,3 +33,4 @@ void VesselControl::update()
         }
     }
 }
+*/

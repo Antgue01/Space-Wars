@@ -1,4 +1,5 @@
-#pragma once
+
+/*#pragma once
 #include "Component.h"
 #include "SDL_macros.h"
 #include "Entity.h"
@@ -20,3 +21,4 @@ public:
 	virtual int from_bin(char *data) override { return 0; }
 	virtual void deserialize(char* data) override {}
 };
+*/

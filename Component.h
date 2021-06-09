@@ -1,3 +1,4 @@
+/*
 #pragma once
 
 #include <SDL2/SDL.h>
@@ -60,3 +61,4 @@ protected:
 	netType type_;
 	MessageQueue *queue_;
 };
+*/

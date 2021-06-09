@@ -1,4 +1,5 @@
-#include "VesselMovement.h"
+
+/*#include "VesselMovement.h"
 
 VesselMovement::VesselMovement(MessageQueue* q) : Component(ecs::VesselMovement,netType::vesselMovement,q)
 {
@@ -28,3 +29,4 @@ void VesselMovement::update()
     //La reduzco
     tr->setVel(tr->getVel() * 0.995);
 }
+*/

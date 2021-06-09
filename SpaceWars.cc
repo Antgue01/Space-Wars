@@ -2,16 +2,11 @@
 #include "SpaceWars.h"
 #include <assert.h>
 #include "Entity.h"
-
 #include "InputHandler.h"
-#include "Transform.h"
 #include "SDLGame.h"
-#include "VesselViewer.h"
-#include "VesselControl.h"
-#include "NetVesselControl.h"
-#include "VesselMovement.h"
-#include "LoginMessage.h"
 
+#include "LoginMessage.h"
+#include "Vessel.h"
 using namespace std;
 
 SpaceWars::SpaceWars(const char *host, const char *port, bool client) : game_(nullptr),			 //
@@ -32,15 +27,24 @@ SpaceWars::~SpaceWars()
 
 void SpaceWars::initGameClient(const char *host, const char *port)
 {
-
+/*
 	LoginMessage msg;
 	serverSd = new Socket(host, port);
 	serverSd->send(msg, *serverSd);
 	msgQueue = new MessageQueue(*serverSd, *serverSd);
-
+*/
 	game_ = SDLGame::init("SpaceWars", _WINDOW_WIDTH_, _WINDOW_HEIGHT_);
 
 	entityManager_ = new EntityManager(game_);
+
+	Vessel* player1 = new Vessel(game_,entityManager_,1,Vector2D(120,120),game_->getTextureMngr()->getTexture(Resources::Player1),SDLK_d,SDLK_a,SDLK_w);
+	
+	entityManager_->addEntity(player1);
+
+
+	Vessel* player2 = new Vessel(game_,entityManager_,1,Vector2D(300,120),game_->getTextureMngr()->getTexture(Resources::Player2),SDLK_RIGHT,SDLK_LEFT,SDLK_UP);
+	
+	entityManager_->addEntity(player2);
 
 	//nave
 	#pragma region deprecated
@@ -79,20 +83,21 @@ void SpaceWars::initGameClient(const char *host, const char *port)
 	//game_->getAudioMngr()->setChannelVolume(5, 0);
 	//game_->getAudioMngr()->setChannelVolume(5, 1);
 #pragma endregion
-	msgQueue->init(entityManager_->getEntities());
+	/*msgQueue->init(entityManager_->getEntities());
 	CountMessage msg2(0);
 	msgQueue->addMsg(&msg);
 	msgQueue->flushSend();
+	*/
 }
 
 void SpaceWars::initServer(const char *host, const char *port)
 {
-	serverSd = new Socket(host, port);
+	/*serverSd = new Socket(host, port);
 	serverSd->bind();
 
 	LoginMessage msg;
 	serverSd->recv(msg, clientSd);
-	msgQueue = new MessageQueue(*serverSd, *clientSd);
+	msgQueue = new MessageQueue(*serverSd, *clientSd);*/
 	//juego
 	game_ = SDLGame::init("SpaceWars", _WINDOW_WIDTH_, _WINDOW_HEIGHT_);
 
@@ -116,18 +121,18 @@ void SpaceWars::initServer(const char *host, const char *port)
 	// player2TR->setPos(0, game_->getWindowHeight() / 2);
 	// player2TR->setWH(70, 70);
 #pragma endregion
-	msgQueue->init(entityManager_->getEntities());
+	/*msgQueue->init(entityManager_->getEntities());
 	CountMessage msg2(0);
 	msgQueue->addMsg(&msg2);
-	msgQueue->flushSend();
+	msgQueue->flushSend();*/
 }
 
 void SpaceWars::closeGame()
 {
 	delete entityManager_;
-	delete clientSd;
+	/*delete clientSd;
 	delete serverSd;
-	delete msgQueue;
+	delete msgQueue;*/
 	game_->closeSDL();
 }
 
@@ -139,12 +144,12 @@ void SpaceWars::start()
 	{
 
 		Uint32 startTime = game_->getTime();
-		msgQueue->receive();
-		msgQueue->flushReceive();
+		//msgQueue->receive();
+		//msgQueue->flushReceive();
 		handleInput();
 		update();
 		render();
-		msgQueue->flushSend();
+		//msgQueue->flushSend();
 
 		Uint32 frameTime = game_->getTime() - startTime;
 		if (frameTime < 10)

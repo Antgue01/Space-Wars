@@ -4,7 +4,7 @@
 void MessageQueue::flushSend()
 {
     CountMessage count(_messagesToSend.size());
-    Message initial(&count, netType::Count);
+    Message initial(&count, 0);
     initial.send(_receiveSocket, _sendSocket);
     while (!_messagesToSend.empty())
     {

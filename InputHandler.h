@@ -1,10 +1,9 @@
 #pragma once
 
-#include <SDL.h>
 #include <array>
 #include "Vector2D.h"
 #include <memory>
-
+#include <SDL2/SDL.h>
 using namespace std;
 
 class InputHandler {

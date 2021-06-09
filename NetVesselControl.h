@@ -1,3 +1,4 @@
+/*
 #pragma once
 #include"Component.h"
 #include"SDL_macros.h"
@@ -27,3 +28,4 @@ public:
 	virtual char *Receive(Serializable *msg) override;
 	std::vector<bool>getKeys(){return pressedKeys;}
 };
+*/

@@ -14,7 +14,7 @@ public:
 
     virtual void to_bin();
     virtual int from_bin(char *bobj);
-	virtual void deserialize(char* data) override;
+	//virtual void deserialize(char* data) override;
 private:
     int a=0;
 };
