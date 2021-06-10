@@ -1,8 +1,8 @@
 #include "Vessel.h"
 #include "SDL_macros.h"
 
-Vessel::Vessel(SDLGame *game, EntityManager *mngr,int _id,Vector2D pos_,Texture* t_, SDL_Keycode right_, SDL_Keycode left_, SDL_Keycode up_):Entity(game,mngr),speed(1),
-thrust(1),velocity(),pos(pos_),size(Vector2D(70,70)),angle(0.0),t(t_),
+Vessel::Vessel(SDLGame *game, EntityManager *mngr,int _id,Vector2D pos_,Texture* t_, SDL_Keycode right_, SDL_Keycode left_, SDL_Keycode up_,MessageQueue* q):Entity(game,mngr),speed(1),
+thrust(1),velocity(),pos(pos_),size(Vector2D(70,70)),angle(0.0),t(t_),queue(q),
 right(right_),left(left_),up(up_)
 
 {
@@ -75,3 +75,7 @@ int Vessel::from_bin(char *data)
     return 0;
 }
 
+void Vessel::Receive(Serializable *msg)
+{
+    
+}
