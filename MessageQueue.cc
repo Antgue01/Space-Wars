@@ -3,13 +3,18 @@
 
 void MessageQueue::flushSend()
 {
-    CountMessage count(_messagesToSend.size());
-    Message initial(&count, 0);
-    initial.send(_receiveSocket, _sendSocket);
-    while (!_messagesToSend.empty())
+    if (!_messagesToSend.empty())
     {
-        _sendSocket.send(*_messagesToSend.front(), _receiveSocket);
-        _messagesToSend.pop();
+
+        CountMessage count(_messagesToSend.size());
+        count.to_bin();
+        Message initial(&count);
+        initial.send(_receiveSocket, _sendSocket);
+        while (!_messagesToSend.empty())
+        {
+            _sendSocket.send(*_messagesToSend.front(), _receiveSocket);
+            _messagesToSend.pop();
+        }
     }
 }
 void MessageQueue::flushReceive()
@@ -18,14 +23,14 @@ void MessageQueue::flushReceive()
     while (!_messagesToReceive.empty())
     {
 
-        for (auto& entity : _entities)
+        for (auto &entity : _entities)
         {
             entity->Receive(_messagesToReceive.front());
         }
         _messagesToReceive.pop();
     }
 }
-void MessageQueue::init(std::list<Entity*> &entities)
+void MessageQueue::init(std::list<Entity *> &entities)
 {
     _entities = entities;
 }

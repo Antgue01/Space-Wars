@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "g++ - Compilar y depurar el archivo activo",
+            "name": "cliente",
             "type": "cppdbg",
             "request": "launch",
             "program": "${fileDirname}/main",
@@ -22,7 +22,26 @@
                     "ignoreFailures": true
                 }
             ],
-            "preLaunchTask": "make",
+            "miDebuggerPath": "/usr/bin/gdb"
+        },
+        {
+            "name": "server",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${fileDirname}/main",
+            "args": ["127.0.0.1","8080","0"],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Habilitar la impresión con sangría para gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
             "miDebuggerPath": "/usr/bin/gdb"
         }
     ]

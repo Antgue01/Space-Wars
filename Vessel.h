@@ -33,4 +33,6 @@ private:
 	SDL_Keycode up;
 	int thrust;
     MessageQueue* queue;
+    std::vector<bool>input;
+    void checkKeys();
 };

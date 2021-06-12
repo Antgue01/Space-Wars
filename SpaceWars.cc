@@ -33,19 +33,18 @@ void SpaceWars::initGameClient(const char *host, const char *port)
 	serverSd->send(msg, *serverSd);
 	msgQueue = new MessageQueue(*serverSd, *serverSd);
 
-	game_ = SDLGame::init("SpaceWars", _WINDOW_WIDTH_, _WINDOW_HEIGHT_);
+	game_ = SDLGame::init("client", _WINDOW_WIDTH_, _WINDOW_HEIGHT_);
 
 	entityManager_ = new EntityManager(game_);
 
-	Vessel* player1 = new Vessel(game_,entityManager_,1,Vector2D(120,120),game_->getTextureMngr()->getTexture(Resources::Player1),SDLK_d,SDLK_a,SDLK_w,msgQueue);	
+	Vessel *player1 = new Vessel(game_, entityManager_, 1, Vector2D(120, 120), game_->getTextureMngr()->getTexture(Resources::Player1), SDLK_d, SDLK_a, SDLK_w, msgQueue);
 	entityManager_->addEntity(player1);
 
-
-	Vessel* player2 = new Vessel(game_,entityManager_,1,Vector2D(300,120),game_->getTextureMngr()->getTexture(Resources::Player2),SDLK_RIGHT,SDLK_LEFT,SDLK_UP,msgQueue);
+	Vessel *player2 = new Vessel(game_, entityManager_, 1, Vector2D(300, 120), game_->getTextureMngr()->getTexture(Resources::Player2), SDLK_RIGHT, SDLK_LEFT, SDLK_UP, msgQueue);
 	entityManager_->addEntity(player2);
 
-	//nave
-	#pragma region deprecated
+//nave
+#pragma region deprecated
 	// Entity *player1 = entityManager_->addEntity();
 	// Transform *player1TR = player1->addComponent<Transform>(msgQueue);
 	// player1->addComponent<VesselMovement>(msgQueue);
@@ -83,9 +82,8 @@ void SpaceWars::initGameClient(const char *host, const char *port)
 #pragma endregion
 	msgQueue->init(entityManager_->getEntities());
 	CountMessage msg2(0);
-	msgQueue->addMsg(&msg);
-	msgQueue->flushSend();
-	
+	Message loginmsg(&msg2);
+	loginmsg.send(*serverSd, *serverSd);
 }
 
 void SpaceWars::initServer(const char *host, const char *port)
@@ -95,20 +93,20 @@ void SpaceWars::initServer(const char *host, const char *port)
 
 	LoginMessage msg;
 	serverSd->recv(msg, clientSd);
-	msgQueue = new MessageQueue(*serverSd, *clientSd);
+	msgQueue = new MessageQueue(*clientSd, *serverSd);
 	//juego
-	game_ = SDLGame::init("SpaceWars", _WINDOW_WIDTH_, _WINDOW_HEIGHT_);
+	game_ = SDLGame::init("server", _WINDOW_WIDTH_, _WINDOW_HEIGHT_);
 
 	entityManager_ = new EntityManager(game_);
 
-	Vessel* player1 = new Vessel(game_,entityManager_,1,Vector2D(120,120),game_->getTextureMngr()->getTexture(Resources::Player1),SDLK_d,SDLK_a,SDLK_w,msgQueue);	
+	Vessel *player1 = new Vessel(game_, entityManager_, 1, Vector2D(120, 120), game_->getTextureMngr()->getTexture(Resources::Player1), SDLK_d, SDLK_a, SDLK_w, msgQueue);
 	entityManager_->addEntity(player1);
 
-	Vessel* player2 = new Vessel(game_,entityManager_,1,Vector2D(300,120),game_->getTextureMngr()->getTexture(Resources::Player2),SDLK_RIGHT,SDLK_LEFT,SDLK_UP,msgQueue);
+	Vessel *player2 = new Vessel(game_, entityManager_, 1, Vector2D(300, 120), game_->getTextureMngr()->getTexture(Resources::Player2), SDLK_RIGHT, SDLK_LEFT, SDLK_UP, msgQueue);
 	entityManager_->addEntity(player2);
 
-	// //nave
-	#pragma region deprecated
+// //nave
+#pragma region deprecated
 	// Entity *player1 = entityManager_->addEntity();
 	// Transform *player1TR = player1->addComponent<Transform>(msgQueue);
 	// player1->addComponent<VesselControl>(msgQueue,SDLK_d, SDLK_a, SDLK_w);
@@ -126,9 +124,11 @@ void SpaceWars::initServer(const char *host, const char *port)
 	// player2TR->setWH(70, 70);
 #pragma endregion
 	msgQueue->init(entityManager_->getEntities());
-	CountMessage msg2(0);
-	msgQueue->addMsg(&msg2);
-	msgQueue->flushSend();
+	// CountMessage msg2(0);
+	// Message msgaccept(&msg2);
+	// msgaccept.send(*serverSd, *clientSd);
+	// msgQueue->addMsg(&msg2);
+	// msgQueue->flushSend();
 }
 
 void SpaceWars::closeGame()
