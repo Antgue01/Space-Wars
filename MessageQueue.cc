@@ -1,7 +1,7 @@
 #include "MessageQueue.h"
 #include "Message.h"
 #include "Vessel.h"
-#include "Default.h"
+#include "DefaultEntity.h"
 void MessageQueue::flushSend()
 {
     if (!_messagesToSend.empty())
@@ -42,7 +42,7 @@ void MessageQueue::receive()
     _receiveSocket->recv(*count);
     if (count->getNumMessages() != 0)
         //Cada mensaje envía también el tipo como extra
-        for (int i = 0; i < count->getNumMessages() / 2; i++)
+        for (int i = 0; i < count->getNumMessages(); i++)
         {
             TypeMessage *typem = new TypeMessage();
             _receiveSocket->recv(*typem);
@@ -63,7 +63,7 @@ Serializable *MessageQueue::netTypeSwitch(TypeMessage::NetType t)
         break;
 
     default:
-        new Default();
+        new DefaultEntity();
         break;
     }
 }

@@ -86,7 +86,7 @@ void Vessel::draw()
 
 void Vessel::to_bin()
 {
-    int size = sizeof(bool) * 3 + sizeof(double) * 2;
+    int size = sizeof(int) * 3 + sizeof(double) * 3;
     alloc_data(size);
     memset(_data, 0, size);
     char *aux = _data;
@@ -94,8 +94,8 @@ void Vessel::to_bin()
     for (size_t i = 0; i < 3; i++)
     {
         auxBool = input.at(i);
-        memcpy(aux, &auxBool, sizeof(bool));
-        aux += sizeof(bool);
+        memcpy(aux, &auxBool, sizeof(int));
+        aux += sizeof(int);
     }
 
     double auxD = pos.getX();
@@ -103,6 +103,10 @@ void Vessel::to_bin()
     aux += sizeof(double);
     auxD = pos.getY();
     memcpy(aux, &auxD, sizeof(double));
+    aux += sizeof(double);
+    auxD = angle;
+    memcpy(aux, &auxD, sizeof(double));
+    std::cout<<_data<<'\n';
 }
 
 int Vessel::from_bin(char *data)
@@ -112,19 +116,19 @@ int Vessel::from_bin(char *data)
         std::cout << "Error on deserialization, empty object received\n";
         return -1;
     }
-    int size = sizeof(bool) * 3 + 2 * sizeof(double);
+    int size = sizeof(int) * 3 + 3 * sizeof(double);
 
     alloc_data(size);
 
     memcpy(static_cast<void *>(_data), data, size);
-    bool auxBool;
+    int auxBool;
     if (input.size() == 0)
         input.assign(3, false);
     for (size_t i = 0; i < 3; i++)
     {
-        memcpy(&auxBool, &data, sizeof(bool));
+        memcpy(&auxBool, &data, sizeof(int));
         input.at(i) = auxBool;
-        data += sizeof(bool);
+        data += sizeof(int);
     }
 
     double auxD;
@@ -133,6 +137,9 @@ int Vessel::from_bin(char *data)
     data += sizeof(double);
     memcpy(&auxD, &data, sizeof(double));
     pos.setY(auxD);
+    data += sizeof(double);
+    memcpy(&angle, &data, sizeof(double));
+
 
     //Reconstruir la clase usando el buffer _data
 
@@ -141,7 +148,7 @@ int Vessel::from_bin(char *data)
 
 void Vessel::Receive(Serializable *msg)
 {
-    Vessel *other = static_cast<Vessel *>(msg);
+    Vessel *other = dynamic_cast<Vessel *>(msg);
     if (other != nullptr)
     {
         if (id == 0)
