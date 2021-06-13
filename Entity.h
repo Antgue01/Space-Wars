@@ -5,12 +5,14 @@
 #include "Manager.h"
 #include "SDLGame.h"
 #include "Serializable.h"
+#include "TypeMessage.h"
+class MessageQueue;
 class EntityManager;
 
 class Entity:public Serializable
 {
 public:
-	Entity(SDLGame *game, EntityManager *mngr);
+	Entity(SDLGame *game, EntityManager *mngr,MessageQueue* queue,TypeMessage::NetType t);
 	virtual ~Entity();
 
 	EntityManager *getEntityMangr()
@@ -63,6 +65,9 @@ public:
 protected:
 	SDLGame *game_;
 	EntityManager *mngr_;
+	MessageQueue* queue_;
+	TypeMessage::NetType myType_;
+	void Send();
 
 	// std::vector<unique_ptr<Component>> components_;
 	// std::array<Component *, ecs::maxComponents> componentsArray_ = {};

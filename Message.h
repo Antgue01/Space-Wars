@@ -6,7 +6,7 @@ class Message
 {
 public:
     Message(Serializable *obj) : _obj(obj) {}
-    void send(Socket src, Socket dest);
+    void send(Socket* src, Socket* dest);
     inline Serializable *getObj() { return _obj; }
     inline void setObj(Serializable *s) { _obj = s; }
 

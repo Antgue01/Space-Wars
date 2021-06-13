@@ -1,8 +1,8 @@
 #include "Vessel.h"
 #include "SDL_macros.h"
 #include "Message.h"
-Vessel::Vessel(SDLGame *game, EntityManager *mngr, int _id, Vector2D pos_, Texture *t_, SDL_Keycode right_, SDL_Keycode left_, SDL_Keycode up_, MessageQueue *q) : Entity(game, mngr), speed(1),
-                                                                                                                                                                   thrust(1), velocity(), pos(pos_), size(Vector2D(70, 70)), angle(0.0), t(t_), queue(q),
+Vessel::Vessel(SDLGame *game, EntityManager *mngr, int _id, Vector2D pos_, Texture *t_, SDL_Keycode right_, SDL_Keycode left_, SDL_Keycode up_, MessageQueue *q) : Entity(game, mngr, q, TypeMessage::NetVessel), speed(1), id(_id),
+                                                                                                                                                                   thrust(1), velocity(), pos(pos_), size(Vector2D(70, 70)), angle(0.0), t(t_),
                                                                                                                                                                    right(right_), left(left_), up(up_), input(3, false)
 
 {
@@ -39,6 +39,7 @@ void Vessel::update()
         //La reduzco
         velocity.set(velocity * 0.995);
         //sendPos
+        Send();
     }
 }
 void Vessel::checkKeys()
@@ -75,7 +76,7 @@ void Vessel::checkKeys()
     else
         input.assign(3, false);
     if (id == 1)
-    //sendKeys
+        Send();
 }
 void Vessel::draw()
 {
@@ -85,10 +86,56 @@ void Vessel::draw()
 
 void Vessel::to_bin()
 {
+    int size = sizeof(bool) * 3 + sizeof(double) * 2;
+    alloc_data(size);
+    memset(_data, 0, size);
+    char *aux = _data;
+    int auxBool;
+    for (size_t i = 0; i < 3; i++)
+    {
+        auxBool = input.at(i);
+        memcpy(aux, &auxBool, sizeof(bool));
+        aux += sizeof(bool);
+    }
+
+    double auxD = pos.getX();
+    memcpy(aux, &auxD, sizeof(double));
+    aux += sizeof(double);
+    auxD = pos.getY();
+    memcpy(aux, &auxD, sizeof(double));
 }
 
 int Vessel::from_bin(char *data)
 {
+    if (data == 0)
+    {
+        std::cout << "Error on deserialization, empty object received\n";
+        return -1;
+    }
+    int size = sizeof(bool) * 3 + 2 * sizeof(double);
+
+    alloc_data(size);
+
+    memcpy(static_cast<void *>(_data), data, size);
+    bool auxBool;
+    if (input.size() == 0)
+        input.assign(3, false);
+    for (size_t i = 0; i < 3; i++)
+    {
+        memcpy(&auxBool, &data, sizeof(bool));
+        input.at(i) = auxBool;
+        data += sizeof(bool);
+    }
+
+    double auxD;
+    memcpy(&auxD, &data, sizeof(double));
+    pos.setX(auxD);
+    data += sizeof(double);
+    memcpy(&auxD, &data, sizeof(double));
+    pos.setY(auxD);
+
+    //Reconstruir la clase usando el buffer _data
+
     return 0;
 }
 
