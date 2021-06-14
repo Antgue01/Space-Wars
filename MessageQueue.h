@@ -12,15 +12,15 @@ public:
     MessageQueue(Socket* mySocket,Socket* otherSocket):_receiveSocket(mySocket),_sendSocket(otherSocket){}
     inline void addMsg(Serializable *msg) { _messagesToSend.push(msg); }
     void flushSend();
-    void flushReceive();
     void receive();
     void init(std::list<Entity*> &entities);
-
+    inline std::queue<Entity*>& getMsgToRecieve(){return _messagesToReceive;}
+    bool client;
 private:
     std::queue<Serializable*> _messagesToSend;
-    std::queue<Serializable*> _messagesToReceive;
+    std::queue<Entity*> _messagesToReceive;
     Socket* _receiveSocket;
     Socket* _sendSocket;
-    Serializable* netTypeSwitch(TypeMessage::NetType t);
+    Entity* netTypeSwitch(TypeMessage::NetType t);
     std::list<Entity*> _entities;
 };

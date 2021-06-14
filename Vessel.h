@@ -9,19 +9,21 @@
 class Vessel : public Entity
 {
 public:
-    Vessel(SDLGame *game, EntityManager *mngr, int _id, Vector2D pos_, Texture *t_, SDL_Keycode right_, SDL_Keycode left_, SDL_Keycode up_, MessageQueue *q,Vessel*Other);
-    Vessel(int Id=0,Vector2D Pos = Vector2D(), Vector2D Vel = Vector2D(), double Angle = 0, vector<bool> Input = vector<bool>(3, false)) :
-     Entity(nullptr, nullptr, nullptr, TypeMessage::NetVessel), t(nullptr), pos(Pos), size(), angle(Angle), speed(), id(Id), velocity(velocity), rotSpeed(), limitX(),
-    limitY(), right(), left(), up(), thrust(), input(Input),netpos(Pos),netvelocity(Vel),netangle(Angle) {
+    
+    Vessel(SDLGame *game, EntityManager *mngr, int _id, Vector2D pos_, Texture *t_, SDL_Keycode right_, SDL_Keycode left_, SDL_Keycode up_, MessageQueue *q,bool sendInp,bool checkkeys_);
+
+    Vessel(bool checkkeys_=false,bool sendInp=false,int Id=0,Vector2D Pos = Vector2D(), Vector2D Vel = Vector2D(), double Angle = 0, vector<bool> Input = vector<bool>(3, false)) :
+     Entity(nullptr, nullptr, nullptr, TypeMessage::NetVessel,Id), t(nullptr), pos(Pos), size(), angle(Angle), speed(), id(Id), velocity(velocity), rotSpeed(), limitX(),
+    limitY(), right(), left(), up(), thrust(), input(Input),netpos(Pos),netvelocity(Vel),netangle(Angle),sendInput(sendInp) {}
         
-    }
+
     virtual ~Vessel();
 
     virtual void update();
     virtual void draw();
     virtual void to_bin();
     virtual int from_bin(char *data);
-    virtual void Receive(Serializable *msg);
+    virtual void deliverMsg(Entity *msg);
     void calculatePos(Vector2D &position, Vector2D &vel);
 
 
@@ -41,6 +43,7 @@ private:
     SDL_Keycode up;
     int thrust;
     std::vector<bool> input;
-    Vessel* other;
-    void checkKeys();
+    void CheckKeys();
+    bool sendInput;
+    bool checkkeys;
 };

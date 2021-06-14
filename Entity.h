@@ -12,7 +12,7 @@ class EntityManager;
 class Entity:public Serializable
 {
 public:
-	Entity(SDLGame *game, EntityManager *mngr,MessageQueue* queue,TypeMessage::NetType t);
+	Entity(SDLGame *game, EntityManager *mngr,MessageQueue* queue,TypeMessage::NetType t,int id);
 	virtual ~Entity();
 
 	EntityManager *getEntityMangr()
@@ -20,6 +20,8 @@ public:
 		return mngr_;
 	}
 
+	inline int getId(){return id_;}
+	inline TypeMessage::NetType getType(){return myType_;}
 	// template <typename T, typename... TArgs>
 	// T *addComponent(TArgs &&... mArgs)
 	// {
@@ -60,13 +62,15 @@ public:
 	// 	}
 	// }
 	// std::vector<unique_ptr<Component>> &getComponents() { return components_; }
-	virtual void Receive(Serializable *msg)=0;
+	virtual void deliverMsg(Entity *msg)=0;
+
 
 protected:
 	SDLGame *game_;
 	EntityManager *mngr_;
 	MessageQueue* queue_;
 	TypeMessage::NetType myType_;
+	int id_;
 	virtual void Send(Serializable* ser);
 
 	// std::vector<unique_ptr<Component>> components_;

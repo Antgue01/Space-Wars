@@ -17,4 +17,8 @@ int LoginMessage::from_bin(char *bobj)
     int size = sizeof(int);
     alloc_data(size);
     memcpy(static_cast<void *>(_data), bobj, size);
+
+    char tmp;
+    memcpy(&tmp,bobj,sizeof(int));
+    a=tmp;
 }

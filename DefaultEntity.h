@@ -13,5 +13,5 @@ public:
     virtual void draw() override {}
     virtual void to_bin() override {}
     virtual int from_bin(char *data) override { return 0; }
-    virtual void Receive(Serializable *msg) override {}
+    virtual void deliverMsg(Entity *msg) override {}
 };

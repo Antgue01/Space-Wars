@@ -19,23 +19,13 @@ void MessageQueue::flushSend()
         }
     }
 }
-void MessageQueue::flushReceive()
-{
 
-    while (!_messagesToReceive.empty())
-    {
-
-        for (auto &entity : _entities)
-        {
-            entity->Receive(_messagesToReceive.front());
-        }
-        delete _messagesToReceive.front();
-        _messagesToReceive.pop();
-    }
-}
 void MessageQueue::init(std::list<Entity *> &entities)
 {
-    _entities = entities;
+    for(auto it =entities.begin(); it!= entities.end();++it)
+    {
+        _entities.push_back((*it));
+    }
 }
 void MessageQueue::receive()
 {
@@ -48,14 +38,14 @@ void MessageQueue::receive()
             TypeMessage *typem = new TypeMessage();
             _receiveSocket->recv(*typem);
 
-            Serializable *seri = netTypeSwitch(typem->myType_);
+            Entity *seri = netTypeSwitch(typem->myType_);
 
             _receiveSocket->recv(*seri);
             _messagesToReceive.push(seri);
         }
     delete count;
 }
-Serializable *MessageQueue::netTypeSwitch(TypeMessage::NetType t)
+Entity *MessageQueue::netTypeSwitch(TypeMessage::NetType t)
 {
     switch (t)
     {

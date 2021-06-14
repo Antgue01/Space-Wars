@@ -6,6 +6,7 @@
 #include "SDLGame.h"
 #include  "Socket.h"
 #include  "MessageQueue.h"
+#include "NetManager.h"
 class SpaceWars {
 
 public:
@@ -31,6 +32,7 @@ private:
     Socket* clientSd;
     Socket* serverSd;
     MessageQueue* msgQueue;
+    NetManager* netMng;
     bool exit_;
     
     const static int _WINDOW_WIDTH_ = 640;

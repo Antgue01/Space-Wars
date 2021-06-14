@@ -9,12 +9,12 @@ class LoginMessage : public Serializable
 {
 
 public:
-    LoginMessage(){}
+    LoginMessage(int b=0):a(b){}
     
 
     virtual void to_bin();
     virtual int from_bin(char *bobj);
 	//virtual void deserialize(char* data) override;
+    int a;
 private:
-    int a=0;
 };

@@ -1,9 +1,10 @@
 #include "Entity.h"
 #include "MessageQueue.h"
-Entity::Entity(SDLGame *game, EntityManager *mngr, MessageQueue *queue,TypeMessage::NetType t) : game_(game), //
+Entity::Entity(SDLGame *game, EntityManager *mngr, MessageQueue *queue,TypeMessage::NetType t,int id) : game_(game), //
 																		  mngr_(mngr),
 																		  queue_(queue),
-																		  myType_(t) //
+																		  myType_(t),
+																		  id_(id) //
 {
 }
 void Entity::Send(Serializable* ser)
