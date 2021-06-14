@@ -1,9 +1,8 @@
 #include "Vessel.h"
 #include "SDL_macros.h"
 #include "Message.h"
-Vessel::Vessel(SDLGame *game, EntityManager *mngr, int _id, Vector2D pos_, Texture *t_, SDL_Keycode right_, SDL_Keycode left_, SDL_Keycode up_, MessageQueue *q) : Entity(game, mngr, q, TypeMessage::NetVessel), speed(1), id(_id),
-                                                                                                                                                                   thrust(1), velocity(), pos(pos_), size(Vector2D(70, 70)), angle(0.0), t(t_),
-                                                                                                                                                                   right(right_), left(left_), up(up_), input(3, false)
+Vessel::Vessel(SDLGame *game, EntityManager *mngr, int _id, Vector2D pos_, Texture *t_, SDL_Keycode right_, SDL_Keycode left_, SDL_Keycode up_, MessageQueue *q, Vessel *Other) : Entity(game, mngr, q, TypeMessage::NetVessel), speed(1), id(_id), thrust(1), velocity(), pos(pos_), size(Vector2D(70, 70)), angle(0.0), t(t_),
+                                                                                                                                                                                  right(right_), left(left_), up(up_), input(3, false), netpos(pos_), netvelocity(), netangle(0), other(Other)
 
 {
     limitX = SDLGame::instance()->getWindowWidth();
@@ -18,29 +17,45 @@ Vessel::~Vessel()
 void Vessel::update()
 {
 
-    checkKeys();
+    if (id < 2)
+        checkKeys();
 
-    //En caso de que se salga de la pantalla rebota
     if (id == 0)
     {
-
-        if (pos.getX() + velocity.getX() + 50 >= limitX || pos.getX() + velocity.getX() <= 0)
-            velocity.setX(velocity.getX() * -1);
-
-        if (pos.getY() + velocity.getY() + 50 >= limitY || pos.getY() + velocity.getY() <= 0)
-            velocity.setY(velocity.getY() * -1);
-
-        //Pongo la velocidad
-        pos.set(pos + velocity);
-
-        if (velocity.magnitude() > 2)
-            velocity.set(velocity.normalize() * 2); //Le pongo limite de velocidad
-
-        //La reduzco
-        velocity.set(velocity * 0.995);
-        //sendPos
-        Send();
+        calculatePos(pos, velocity);
+        Send(new Vessel(2, pos, velocity, angle));
+        if (input[0])
+            netangle += 5;
+        else if (input[1])
+            netangle -= 5;
+        if (input[2])
+            netvelocity.set(netvelocity + Vector2D(0, -speed).rotate(netangle * thrust));
+        calculatePos(netpos, netvelocity);
+        Send(new Vessel(1, netpos, netvelocity, angle));
+        if (other != nullptr)
+        {
+            other->pos = netpos;
+            other->velocity = netvelocity;
+            other->angle = netangle;
+        }
     }
+}
+void Vessel::calculatePos(Vector2D &position, Vector2D &vel)
+{
+    //En caso de que se salga de la pantalla rebota
+    if (position.getX() + vel.getX() + 50 >= limitX || position.getX() + vel.getX() <= 0)
+        vel.setX(vel.getX() * -1);
+
+    if (position.getY() + vel.getY() + 50 >= limitY || position.getY() + vel.getY() <= 0)
+        vel.setY(vel.getY() * -1);
+
+    if (vel.magnitude() > 2)
+        vel.set(vel.normalize() * 2); //Le pongo limite de velocidad
+
+    //La reduzco
+    vel.set(vel * 0.995);
+    //Pongo la velocidad
+    position.set(position + vel);
 }
 void Vessel::checkKeys()
 {
@@ -64,7 +79,6 @@ void Vessel::checkKeys()
             else
                 input[1] = true;
         }
-        //Impulso en una direccion concreta, dependiendo si el archivo de configuraci�n tenia velocidad o no
         if (ih->isKeyDown(up))
         {
             if (id == 0)
@@ -76,7 +90,7 @@ void Vessel::checkKeys()
     else
         input.assign(3, false);
     if (id == 1)
-        Send();
+        Send(new Vessel(0, Vector2D(), Vector2D(), 0, input));
 }
 void Vessel::draw()
 {
@@ -86,10 +100,12 @@ void Vessel::draw()
 
 void Vessel::to_bin()
 {
-    int size = sizeof(int) * 3 + sizeof(double) * 3;
+    int size = sizeof(int) * 4 + sizeof(double) * 5;
     alloc_data(size);
     memset(_data, 0, size);
     char *aux = _data;
+    memcpy(aux, &id, sizeof(int));
+    aux += sizeof(int);
     int auxBool;
     for (size_t i = 0; i < 3; i++)
     {
@@ -106,7 +122,12 @@ void Vessel::to_bin()
     aux += sizeof(double);
     auxD = angle;
     memcpy(aux, &auxD, sizeof(double));
-    std::cout<<_data<<'\n';
+    aux += sizeof(double);
+    auxD = velocity.getX();
+    memcpy(aux, &auxD, sizeof(double));
+    aux += sizeof(double);
+    auxD = velocity.getY();
+    memcpy(aux, &auxD, sizeof(double));
 }
 
 int Vessel::from_bin(char *data)
@@ -116,46 +137,59 @@ int Vessel::from_bin(char *data)
         std::cout << "Error on deserialization, empty object received\n";
         return -1;
     }
-    int size = sizeof(int) * 3 + 3 * sizeof(double);
+    int size = sizeof(int) * 4 + 5 * sizeof(double);
 
     alloc_data(size);
 
     memcpy(static_cast<void *>(_data), data, size);
+    memcpy(&id, data, sizeof(int));
+    data += sizeof(int);
     int auxBool;
     if (input.size() == 0)
         input.assign(3, false);
     for (size_t i = 0; i < 3; i++)
     {
-        memcpy(&auxBool, &data, sizeof(int));
+        memcpy(&auxBool, data, sizeof(int));
         input.at(i) = auxBool;
         data += sizeof(int);
     }
 
     double auxD;
-    memcpy(&auxD, &data, sizeof(double));
+    memcpy(&auxD, data, sizeof(double));
     pos.setX(auxD);
     data += sizeof(double);
-    memcpy(&auxD, &data, sizeof(double));
+    memcpy(&auxD, data, sizeof(double));
     pos.setY(auxD);
     data += sizeof(double);
-    memcpy(&angle, &data, sizeof(double));
-
+    memcpy(&angle, data, sizeof(double));
+    data += sizeof(double);
+    memcpy(&auxD, data, sizeof(double));
+    velocity.setX(auxD);
+    data += sizeof(double);
+    memcpy(&auxD, data, sizeof(double));
+    velocity.setY(auxD);
 
     //Reconstruir la clase usando el buffer _data
 
     return 0;
 }
-
 void Vessel::Receive(Serializable *msg)
 {
     Vessel *other = dynamic_cast<Vessel *>(msg);
     if (other != nullptr)
     {
-        if (id == 0)
+        if (id == 0 && other->id == 1)
+        {
+
             input = other->input;
-        if (id == 1)
+            netpos = other->pos;
+            netvelocity = other->velocity;
+            netangle = other->angle;
+        }
+        if ((id == 1 && other->id ==1 )|| (id == 2 && other->id==2))
         {
             pos = other->pos;
+            angle = other->angle;
         }
     }
 }

@@ -29,6 +29,7 @@ void MessageQueue::flushReceive()
         {
             entity->Receive(_messagesToReceive.front());
         }
+        delete _messagesToReceive.front();
         _messagesToReceive.pop();
     }
 }

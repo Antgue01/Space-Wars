@@ -37,10 +37,10 @@ void SpaceWars::initGameClient(const char *host, const char *port)
 
 	entityManager_ = new EntityManager(game_);
 
-	Vessel *player1 = new Vessel(game_, entityManager_, 1, Vector2D(120, 120), game_->getTextureMngr()->getTexture(Resources::Player1), SDLK_d, SDLK_a, SDLK_w, msgQueue);
+	Vessel *player1 = new Vessel(game_, entityManager_, 2, Vector2D(120, 120), game_->getTextureMngr()->getTexture(Resources::Player1), SDLK_d, SDLK_a, SDLK_w, msgQueue,nullptr);
 	entityManager_->addEntity(player1);
 
-	Vessel *player2 = new Vessel(game_, entityManager_, 0, Vector2D(300, 120), game_->getTextureMngr()->getTexture(Resources::Player2), SDLK_RIGHT, SDLK_LEFT, SDLK_UP, msgQueue);
+	Vessel *player2 = new Vessel(game_, entityManager_, 1, Vector2D(300, 120), game_->getTextureMngr()->getTexture(Resources::Player2), SDLK_RIGHT, SDLK_LEFT, SDLK_UP, msgQueue,nullptr);
 	entityManager_->addEntity(player2);
 
 //nave
@@ -96,11 +96,11 @@ void SpaceWars::initServer(const char *host, const char *port)
 
 	entityManager_ = new EntityManager(game_);
 
-	Vessel *player1 = new Vessel(game_, entityManager_, 0, Vector2D(120, 120), game_->getTextureMngr()->getTexture(Resources::Player1), SDLK_RIGHT, SDLK_LEFT, SDLK_UP, msgQueue);
-	entityManager_->addEntity(player1);
-
-	Vessel *player2 = new Vessel(game_, entityManager_, 1, Vector2D(300, 120), game_->getTextureMngr()->getTexture(Resources::Player2), SDLK_d, SDLK_a, SDLK_w, msgQueue);
+	Vessel *player2 = new Vessel(game_, entityManager_, 3, Vector2D(300, 120), game_->getTextureMngr()->getTexture(Resources::Player2), SDLK_d, SDLK_a, SDLK_w, msgQueue, nullptr);
 	entityManager_->addEntity(player2);
+
+	Vessel *player1 = new Vessel(game_, entityManager_, 0, Vector2D(120, 120), game_->getTextureMngr()->getTexture(Resources::Player1), SDLK_RIGHT, SDLK_LEFT, SDLK_UP, msgQueue, player2);
+	entityManager_->addEntity(player1);
 
 // //nave
 #pragma region deprecated

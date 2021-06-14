@@ -67,7 +67,7 @@ protected:
 	EntityManager *mngr_;
 	MessageQueue* queue_;
 	TypeMessage::NetType myType_;
-	void Send();
+	virtual void Send(Serializable* ser);
 
 	// std::vector<unique_ptr<Component>> components_;
 	// std::array<Component *, ecs::maxComponents> componentsArray_ = {};

@@ -6,11 +6,11 @@ Entity::Entity(SDLGame *game, EntityManager *mngr, MessageQueue *queue,TypeMessa
 																		  myType_(t) //
 {
 }
-void Entity::Send()
+void Entity::Send(Serializable* ser)
 {
 	// to_bin();
 	queue_->addMsg(new TypeMessage(myType_));
-	queue_->addMsg(this);
+	queue_->addMsg(ser);
 }
 Entity::~Entity()
 {
