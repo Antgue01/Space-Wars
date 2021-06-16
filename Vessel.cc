@@ -129,7 +129,7 @@ void Vessel::draw()
 
 void Vessel::to_bin()
 {
-    int size = sizeof(int) * 4 + sizeof(double) * 3 + sizeof(int);
+    int size = sizeof(int) * 4 + sizeof(double) * 3;
     alloc_data(size);
     memset(_data, 0, size);
     char *aux = _data;
@@ -151,11 +151,7 @@ void Vessel::to_bin()
     aux += sizeof(double);
     auxD = angle;
     memcpy(aux, &auxD, sizeof(double));
-    aux += sizeof(double);
-    int a;
-    a = server ? 9 : 23;
-    memcpy(aux, &a, sizeof(int));
-    std::cout << id_ << " Sent: " << a << '\n';
+  
 }
 
 int Vessel::from_bin(char *data)
@@ -165,7 +161,7 @@ int Vessel::from_bin(char *data)
         std::cout << "Error on deserialization, empty object received\n";
         return -1;
     }
-    int size = sizeof(int) * 4 + 3 * sizeof(double) + sizeof(int);
+    int size = sizeof(int) * 4 + 3 * sizeof(double) ;
 
     alloc_data(size);
 
@@ -176,7 +172,7 @@ int Vessel::from_bin(char *data)
     for (size_t i = 0; i < 3; i++)
     {
         memcpy(&auxBool, data, sizeof(int));
-        input.push_back(i);
+        input.at(i)=auxBool;
         data += sizeof(int);
     }
 
@@ -189,9 +185,6 @@ int Vessel::from_bin(char *data)
     data += sizeof(double);
     memcpy(&angle, data, sizeof(double));
     data += sizeof(double);
-    int a;
-    memcpy(&a, data, sizeof(int));
-    std::cout << id_ << " Received: " << a << '\n';
     return 0;
 }
 void Vessel::deliverMsg(Entity *msg)
