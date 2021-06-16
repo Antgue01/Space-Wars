@@ -12,7 +12,8 @@ using namespace std;
 
 SpaceWars::SpaceWars(const char *host, const char *port, bool client) : game_(nullptr),			 //
 																		entityManager_(nullptr), //
-																		exit_(false)
+																		exit_(false),
+																		c(client)
 {
 
 	if (client)
@@ -31,17 +32,21 @@ void SpaceWars::initGameClient(const char *host, const char *port)
 	LoginMessage msg(1);
 	serverSd = new Socket(host, port);
 	serverSd->send(msg, *serverSd);
-	msgQueue = new MessageQueue(serverSd, serverSd);
-	msgQueue->client=true;
+	msgQueue = new MessageQueue(serverSd, serverSd, true);
+
+	// LoginMessage msg2;
+	// serverSd->recv(msg2, clientSd);
+	// std::cout << msg2.a << std::endl;
+	// serverSd->send(msg2, *serverSd);
+
 	game_ = SDLGame::init("client", _WINDOW_WIDTH_, _WINDOW_HEIGHT_);
 
 	entityManager_ = new EntityManager(game_);
 
-
-	Vessel *player1 = new Vessel(game_, entityManager_, 0, Vector2D(120, 120), game_->getTextureMngr()->getTexture(Resources::Player1), SDLK_d, SDLK_a, SDLK_w, msgQueue,false,false);
+	Vessel *player1 = new Vessel(game_, entityManager_, 0, Vector2D(120, 120), game_->getTextureMngr()->getTexture(Resources::Player1), SDLK_d, SDLK_a, SDLK_w, msgQueue, false, false);
 	entityManager_->addEntity(player1);
 
-	Vessel *player2 = new Vessel(game_, entityManager_, 1, Vector2D(300, 120), game_->getTextureMngr()->getTexture(Resources::Player2), SDLK_RIGHT, SDLK_LEFT, SDLK_UP, msgQueue,true,false);
+	Vessel *player2 = new Vessel(game_, entityManager_, 1, Vector2D(300, 120), game_->getTextureMngr()->getTexture(Resources::Player2), SDLK_RIGHT, SDLK_LEFT, SDLK_UP, msgQueue, false, true);
 	entityManager_->addEntity(player2);
 
 	msgQueue->init(entityManager_->getEntities());
@@ -93,18 +98,19 @@ void SpaceWars::initServer(const char *host, const char *port)
 
 	LoginMessage msg;
 	serverSd->recv(msg, clientSd);
-	std::cout<<msg.a<<std::endl;
-	msgQueue = new MessageQueue(clientSd, serverSd);
+	std::cout << msg.a << std::endl;
+	msgQueue = new MessageQueue(clientSd, serverSd, false);
 	//juego
+	// LoginMessage msg2(12);
+	// serverSd->send(msg2, *clientSd);
 	game_ = SDLGame::init("server", _WINDOW_WIDTH_, _WINDOW_HEIGHT_);
 
 	entityManager_ = new EntityManager(game_);
-	msgQueue->client=false;
 
-	Vessel *player1 = new Vessel(game_, entityManager_, 0, Vector2D(120, 120), game_->getTextureMngr()->getTexture(Resources::Player1), SDLK_RIGHT, SDLK_LEFT, SDLK_UP, msgQueue,true,true);
+	Vessel *player1 = new Vessel(game_, entityManager_, 0, Vector2D(120, 120), game_->getTextureMngr()->getTexture(Resources::Player1), SDLK_RIGHT, SDLK_LEFT, SDLK_UP, msgQueue, true, true);
 	entityManager_->addEntity(player1);
 
-	Vessel *player2 = new Vessel(game_, entityManager_, 1, Vector2D(300, 120), game_->getTextureMngr()->getTexture(Resources::Player2), SDLK_d, SDLK_a, SDLK_w, msgQueue,false,true);
+	Vessel *player2 = new Vessel(game_, entityManager_, 1, Vector2D(300, 120), game_->getTextureMngr()->getTexture(Resources::Player2), SDLK_d, SDLK_a, SDLK_w, msgQueue, true, false);
 	entityManager_->addEntity(player2);
 
 	msgQueue->init(entityManager_->getEntities());
@@ -150,18 +156,21 @@ void SpaceWars::start()
 {
 	exit_ = false;
 
+	if (c)
+	{
+		netMng->send();
+		msgQueue->flushSend();
+	}
 	while (!exit_)
 	{
 
 		Uint32 startTime = game_->getTime();
-		msgQueue->receive();
 		netMng->recieve();
 		handleInput();
 		update();
 		render();
 		netMng->send();
 		msgQueue->flushSend();
-
 
 		Uint32 frameTime = game_->getTime() - startTime;
 		if (frameTime < 10)

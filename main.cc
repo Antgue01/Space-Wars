@@ -30,7 +30,7 @@ int main(int argc, char** argv)
 	} catch (std::string &e) { // catch errors thrown as strings
 		cerr << e << endl;
 	} catch (const std::exception &e) { // catch other exceptions
-		cerr << e.what();
+		cout << e.what();
 	} catch (...) {
 		cerr << "Caught and exception of unknown type ..";
 	}

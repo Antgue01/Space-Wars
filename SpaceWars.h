@@ -26,6 +26,7 @@ private:
     void handleInput();
     void update();
     void render();
+    bool c;
 
     SDLGame* game_;
     EntityManager* entityManager_;

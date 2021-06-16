@@ -1,6 +1,7 @@
 #include "NetManager.h"
 #include "Entity.h"
 #include "MessageQueue.h"
+#include "Vessel.h"
 
 void NetManager::init(std::list<Entity*>& ent)
 {
@@ -28,6 +29,7 @@ void NetManager::recieve()
     {
         if(msgQueue==nullptr)std::cout<<"NULL\n";
         Entity* e = msgQueue->getMsgToRecieve().front();
+        int aux=e->getId();
         auto e2 = entities.find(e->getId());
         if( e2 != entities.end())
         {

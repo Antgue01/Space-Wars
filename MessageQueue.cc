@@ -22,7 +22,7 @@ void MessageQueue::flushSend()
 
 void MessageQueue::init(std::list<Entity *> &entities)
 {
-    for(auto it =entities.begin(); it!= entities.end();++it)
+    for (auto it = entities.begin(); it != entities.end(); ++it)
     {
         _entities.push_back((*it));
     }
@@ -30,17 +30,18 @@ void MessageQueue::init(std::list<Entity *> &entities)
 void MessageQueue::receive()
 {
     CountMessage *count = new CountMessage(-1);
-    _receiveSocket->recv(*count);
+    if (_sendSocket->recv(*count) < 0)
+        std::cout << strerror(errno) << '\n';
     if (count->getNumMessages() != 0)
         //Cada mensaje envía también el tipo como extra
-        for (int i = 0; i < count->getNumMessages(); i++)
+        for (int i = 0; i < count->getNumMessages() / 2; i++)
         {
             TypeMessage *typem = new TypeMessage();
-            _receiveSocket->recv(*typem);
+            _sendSocket->recv(*typem);
 
             Entity *seri = netTypeSwitch(typem->myType_);
-
-            _receiveSocket->recv(*seri);
+            delete typem;
+            _sendSocket->recv(*seri);
             _messagesToReceive.push(seri);
         }
     delete count;
@@ -50,8 +51,13 @@ Entity *MessageQueue::netTypeSwitch(TypeMessage::NetType t)
     switch (t)
     {
     case TypeMessage::NetType::NetVessel:
-        return new Vessel();
+    {
+
+        Vessel *a = new Vessel();
+        a->getInput().assign(3, false);
+        return a;
         break;
+    }
 
     default:
         new DefaultEntity();
