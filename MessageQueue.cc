@@ -2,6 +2,8 @@
 #include "Message.h"
 #include "Vessel.h"
 #include "DefaultEntity.h"
+#include "BulletsPool.h"
+
 void MessageQueue::flushSend()
 {
     if (!_messagesToSend.empty())
@@ -58,7 +60,12 @@ Entity *MessageQueue::netTypeSwitch(TypeMessage::NetType t)
         return a;
         break;
     }
-
+    case TypeMessage::NetBulletsPool:
+    {
+        BulletsPool* b = new BulletsPool();
+        return b;
+        break;
+    }
     default:
         new DefaultEntity();
         break;

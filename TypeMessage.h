@@ -9,9 +9,10 @@ class TypeMessage : public Serializable
 public:
     enum NetType : uint
     {
-
         Default,
-        NetVessel
+        NetVessel,
+        NetBulletsPool,
+        NetAsteroidsPool
     };
 
     TypeMessage(NetType t = Default) : Serializable(), myType_(t) {}

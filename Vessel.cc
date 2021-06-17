@@ -1,13 +1,15 @@
 #include "Vessel.h"
 #include "SDL_macros.h"
 #include "Message.h"
-Vessel::Vessel(SDLGame *game, EntityManager *mngr, int _id, Vector2D pos_, Texture *t_, SDL_Keycode right_, SDL_Keycode left_, SDL_Keycode up_, MessageQueue *q, bool sendInp, bool checkkeys_) : Entity(game, mngr, q, TypeMessage::NetVessel, _id), speed(1), thrust(1), velocity(), pos(pos_), size(Vector2D(70, 70)), angle(0.0), t(t_),
-                                                                                                                                                                                                  right(right_), left(left_), up(up_), input(), server(sendInp), checkkeys(checkkeys_)
+
+Vessel::Vessel(SDLGame *game, EntityManager *mngr, int _id, Vector2D pos_, Texture *t_, SDL_Keycode right_, SDL_Keycode left_, SDL_Keycode up_, MessageQueue *q, bool sendInp, bool checkkeys_,BulletsPool* bp) : Entity(game, mngr, q, TypeMessage::NetVessel, _id), speed(1), thrust(1), velocity(), pos(pos_), size(Vector2D(70, 70)), angle(0.0), t(t_),
+                                                                                                                                                                                                  right(right_), left(left_), up(up_), input(), server(sendInp), checkkeys(checkkeys_),startTime(0),bulletsPool(bp)
 
 {
     limitX = SDLGame::instance()->getWindowWidth();
     limitY = SDLGame::instance()->getWindowHeight();
     input.assign(3, false);
+    startTime = game_->getTime();
 }
 Vessel::Vessel() : Entity(nullptr, nullptr, nullptr, TypeMessage::NetVessel, 0) ,t(nullptr), pos(), size(), angle(0), speed(),  
 velocity(velocity), rotSpeed(), limitX(), limitY(), right(), left(), up(), thrust(), input(), server(false),checkkeys(false) 
@@ -26,10 +28,13 @@ velocity(velocity), rotSpeed(), limitX(), limitY(), right(), left(), up(), thrus
 Vessel::~Vessel()
 {
     t = nullptr;
+    bulletsPool = nullptr;
 }
 
 void Vessel::update()
 {
+
+
 
     if (checkkeys)
         CheckKeys();
@@ -120,7 +125,22 @@ void Vessel::CheckKeys()
     }
     else
         input.assign(3, false);
+
+
+    if (ih->keyDownEvent() )
+	{
+		//Si se pulsa el espacio y se ha cumplido el tiempo de retroceso, dispara una bala en la direccion de la nave
+		if (ih->isKeyDown(SDLK_SPACE) && game_->getTime() >= startTime + 250)
+		{
+			Vector2D bulletPos = pos + Vector2D(size.getX() / 2, size.getY() / 2) + Vector2D(0, -(size.getX() / 2 + 5.0)).rotate(angle);
+			Vector2D bulletVel = Vector2D(0, -1).rotate(angle) * 2;
+			bulletsPool->shoot(bulletPos,bulletVel,5,20);
+
+			startTime = game_->getTime();	//Reseteamos el tiempo de retroceso
+		}		
+	}
 }
+
 void Vessel::draw()
 {
     SDL_Rect dest = {pos.getX(), pos.getY(), size.getX(), size.getY()};
