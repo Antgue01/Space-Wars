@@ -12,7 +12,7 @@ public:
         Default,
         NetVessel,
         NetBulletsPool,
-        NetAsteroidsPool
+        NetAsteroid
     };
 
     TypeMessage(NetType t = Default) : Serializable(), myType_(t) {}

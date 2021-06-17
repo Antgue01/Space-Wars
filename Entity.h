@@ -9,19 +9,20 @@
 class MessageQueue;
 class EntityManager;
 
-class Entity:public Serializable
+class Entity : public Serializable
 {
 public:
-	Entity(SDLGame *game, EntityManager *mngr,MessageQueue* queue,TypeMessage::NetType t,int id);
+	Entity(SDLGame *game, EntityManager *mngr, MessageQueue *queue, TypeMessage::NetType t, int id);
 	virtual ~Entity();
 
 	EntityManager *getEntityMangr()
 	{
 		return mngr_;
 	}
-
-	inline int getId(){return id_;}
-	inline TypeMessage::NetType getType(){return myType_;}
+	inline bool getInUse() { return inUse; }
+	inline void setInUse(bool v) { inUse = v; }
+	inline int getId() { return id_; }
+	inline TypeMessage::NetType getType() { return myType_; }
 	// template <typename T, typename... TArgs>
 	// T *addComponent(TArgs &&... mArgs)
 	// {
@@ -45,7 +46,7 @@ public:
 	// {
 	// 	return componentsArray_[id] != nullptr;
 	// }
-	
+
 	virtual void update() = 0;
 	// {
 	// 	for (auto &c : components_)
@@ -62,16 +63,16 @@ public:
 	// 	}
 	// }
 	// std::vector<unique_ptr<Component>> &getComponents() { return components_; }
-	virtual void deliverMsg(Entity *msg)=0;
-
+	virtual void deliverMsg(Entity *msg) = 0;
 
 protected:
 	SDLGame *game_;
 	EntityManager *mngr_;
-	MessageQueue* queue_;
+	MessageQueue *queue_;
 	TypeMessage::NetType myType_;
 	int id_;
-	virtual void Send(Serializable* ser);
+	bool inUse;
+	virtual void Send(Serializable *ser);
 
 	// std::vector<unique_ptr<Component>> components_;
 	// std::array<Component *, ecs::maxComponents> componentsArray_ = {};

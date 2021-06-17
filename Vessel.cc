@@ -2,8 +2,8 @@
 #include "SDL_macros.h"
 #include "Message.h"
 
-Vessel::Vessel(SDLGame *game, EntityManager *mngr, int _id, Vector2D pos_, Texture *t_, SDL_Keycode right_, SDL_Keycode left_, SDL_Keycode up_, MessageQueue *q, bool sendInp, bool checkkeys_,BulletsPool* bp) : Entity(game, mngr, q, TypeMessage::NetVessel, _id), speed(1), thrust(1), velocity(), pos(pos_), size(Vector2D(70, 70)), angle(0.0), t(t_),
-                                                                                                                                                                                                  right(right_), left(left_), up(up_), input(), server(sendInp), checkkeys(checkkeys_),startTime(0),bulletsPool(bp)
+Vessel::Vessel(SDLGame *game, EntityManager *mngr, int _id, Vector2D pos_, Texture *t_, SDL_Keycode right_, SDL_Keycode left_, SDL_Keycode up_, MessageQueue *q, bool sendInp, bool checkkeys_/*,BulletsPool* bp*/) : Entity(game, mngr, q, TypeMessage::NetVessel, _id), speed(1), thrust(1), velocity(), pos(pos_), size(Vector2D(70, 70)), angle(0.0), t(t_),
+                                                                                                                                                                                                  right(right_), left(left_), up(up_), input(), server(sendInp), checkkeys(checkkeys_),startTime(0)/*,bulletsPool(bp)*/
 
 {
     limitX = SDLGame::instance()->getWindowWidth();
@@ -17,25 +17,14 @@ velocity(velocity), rotSpeed(), limitX(), limitY(), right(), left(), up(), thrus
     input.assign(3,false);
 }
              
-
-// Vessel::Vessel(const Vessel &other) : Entity(nullptr, nullptr, nullptr, TypeMessage::NetType::NetVessel, other.id)
-// {
-//     pos.set(other.pos);
-//     angle = other.angle;
-//     input = other.input;
-//     server = other.server;
-// }
 Vessel::~Vessel()
 {
     t = nullptr;
-    bulletsPool = nullptr;
+    // bulletsPool = nullptr;
 }
 
 void Vessel::update()
 {
-
-
-
     if (checkkeys)
         CheckKeys();
 
@@ -43,27 +32,6 @@ void Vessel::update()
     {
         calculatePos(pos, velocity);
     }
-    /*
-    if (id == 0)
-    {
-        calculatePos(pos, velocity);
-        //Send(new Vessel(2, pos, velocity, angle));
-        if (input[0])
-            netangle += 5;
-        else if (input[1])
-            netangle -= 5;
-        if (input[2])
-            netvelocity.set(netvelocity + Vector2D(0, -speed).rotate(netangle * thrust));
-        calculatePos(netpos, netvelocity);
-        //Send(new Vessel(1, netpos, netvelocity, angle));
-        if (other != nullptr)
-        {
-            other->pos = netpos;
-            other->velocity = netvelocity;
-            other->angle = netangle;
-        }
-    }
-    */
 }
 void Vessel::calculatePos(Vector2D &position, Vector2D &vel)
 {
@@ -134,7 +102,7 @@ void Vessel::CheckKeys()
 		{
 			Vector2D bulletPos = pos + Vector2D(size.getX() / 2, size.getY() / 2) + Vector2D(0, -(size.getX() / 2 + 5.0)).rotate(angle);
 			Vector2D bulletVel = Vector2D(0, -1).rotate(angle) * 2;
-			bulletsPool->shoot(bulletPos,bulletVel,5,20);
+			// bulletsPool->shoot(bulletPos,bulletVel,5,20);
 
 			startTime = game_->getTime();	//Reseteamos el tiempo de retroceso
 		}		

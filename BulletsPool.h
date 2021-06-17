@@ -1,8 +1,6 @@
 #pragma once
 #include "Entity.h"
-#include "ObjectPool.h"
 #include "Bullet.h"
-//#include "Asteroid.h"
 #include "Collisions.h"
 #include "SDLGame.h"
 #include "MessageQueue.h"
@@ -12,7 +10,7 @@ class BulletsPool : public Entity
 {
 private:
 
-	ObjectPool<Bullet, 20> bulletsPool;
+	// ObjectPool<Bullet, 20> bulletsPool;
     Texture* t;
 
 public:

@@ -4,7 +4,8 @@ Entity::Entity(SDLGame *game, EntityManager *mngr, MessageQueue *queue,TypeMessa
 																		  mngr_(mngr),
 																		  queue_(queue),
 																		  myType_(t),
-																		  id_(id) //
+																		  id_(id),
+																		  inUse(true) //
 {
 }
 void Entity::Send(Serializable* ser)
