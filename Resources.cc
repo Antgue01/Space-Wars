@@ -9,13 +9,7 @@ vector<Resources::FontInfo> Resources::fonts_ {
 
 vector<Resources::ImageInfo> Resources::images_ {
 //
-		{ Blank, "resources/images/blank.png" }, //
-		{ TennisBall, "resources/images/tennis_ball.png" }, //
-		{ KeyBoardIcon, "resources/images/keyboard.png" }, //
-		{ MouseIcon, "resources/images/mouse.png" }, //
-		{ AIIcon, "resources/images/ai.png" }, //
-		{ SpaceShips, "resources/images/spaceships.png" }, //
-		{ Star, "resources/images/star.png" }, //
+		
         {Player1,"./resources/images/player1.png"},
         {Player2,"./resources/images/player2.png"},
         {Heart,"./resources/images/heart.png"},
@@ -25,11 +19,11 @@ vector<Resources::ImageInfo> Resources::images_ {
 };
 
 vector<Resources::TextMsgInfo> Resources::messages_ {
-//
-		{ HelloWorld, "Hello World", { COLOR(0xaaffffff) }, ARIAL16 }, //
-		{ PressAnyKey, "Press Any Key to Start", { COLOR(0xaaffbbff) }, ARIAL24 }, //
-		{ GameOverWin, "Game Over,You Win", { COLOR(0xffffbbff) }, ARIAL24 }, //
-		{ GameOverLost, "Game Over,You Lost", { COLOR(0xffffbbff) }, ARIAL24 } //
+
+		{ ClientWin, "Client wins", { COLOR(0xffffbbff) }, ARIAL24 }, //
+		{ ServerWin, "Server wins", { COLOR(0xffffbbff) }, ARIAL24 }, //
+		{ ClientLose, "Client loses", { COLOR(0xffffbbff) }, ARIAL24 }, //
+		{ ServerLose, "Server loses", { COLOR(0xffffbbff) }, ARIAL24 } //
 };
 
 vector<Resources::MusicInfo> Resources::musics_ {

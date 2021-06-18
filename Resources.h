@@ -10,15 +10,7 @@ class Resources {
 public:
 
 	enum TextureId : std::size_t {
-		// images
-		Blank,
-		TennisBall,
-		KeyBoardIcon,
-		MouseIcon,
-		AIIcon,
-		SpaceShips,
-		Airplanes,
-		Star,
+		// images		
 		Player1,
 		Player2,
 		Heart,
@@ -26,10 +18,10 @@ public:
 		Bullet,
 
 		// text
-		HelloWorld,
-		PressAnyKey,
-		GameOverLost,
-		GameOverWin,
+		ServerWin,
+		ClientWin,
+		ServerLose,
+		ClientLose
 	};
 
 	enum AudioId : std::size_t {

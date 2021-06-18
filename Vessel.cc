@@ -3,7 +3,7 @@
 #include "Message.h"
 
 Vessel::Vessel(SDLGame *game, EntityManager *mngr, int _id, Vector2D pos_, Texture *t_, SDL_Keycode right_, SDL_Keycode left_, SDL_Keycode up_, bool sendInp, bool checkkeys_ ,BulletsPool* bp) : Entity(game, mngr, TypeMessage::NetVessel, _id), speed(1), thrust(1), velocity(), pos(pos_), size(Vector2D(70, 70)), angle(0.0), t(t_),
-                                                                                                                                                                                                                       right(right_), left(left_), up(up_), input(), server(sendInp), checkkeys(checkkeys_), startTime(0) ,bulletsPool(bp),lives(3)
+                                                                                                                                                                                                                       right(right_), left(left_), up(up_), input(), server(sendInp), checkkeys(checkkeys_), startTime(0) ,bulletsPool(bp),lives(3),canPlay(true)
 
 {
     tHeart = game->getTextureMngr()->getTexture(Resources::Heart);
@@ -13,7 +13,7 @@ Vessel::Vessel(SDLGame *game, EntityManager *mngr, int _id, Vector2D pos_, Textu
     startTime = game_->getTime();
 }
 Vessel::Vessel() : Entity(nullptr, nullptr, TypeMessage::NetVessel, 0), t(nullptr), pos(), size(), angle(0), speed(),
-                   velocity(velocity), rotSpeed(), limitX(), limitY(), right(), left(), up(), thrust(), input(), server(false), checkkeys(false),lives(3)
+                   velocity(velocity), rotSpeed(), limitX(), limitY(), right(), left(), up(), thrust(), input(), server(false), checkkeys(false),lives(3),canPlay(true)
 {
     input.assign(4, false);
 }
@@ -27,13 +27,18 @@ Vessel::~Vessel()
 
 void Vessel::update()
 {
-    if (checkkeys)
+
+    if(canPlay)
+    {
+        if (checkkeys)
         CheckKeys();
 
-    if (server)
-    {
-        calculatePos(pos, velocity);
+        if (server)
+        {
+            calculatePos(pos, velocity);
+        }
     }
+  
 }
 void Vessel::calculatePos(Vector2D &position, Vector2D &vel)
 {
@@ -73,7 +78,6 @@ void Vessel::calculatePos(Vector2D &position, Vector2D &vel)
         Vector2D bulletPos = pos + Vector2D(size.getX() / 2, size.getY() / 2) + Vector2D(0, -(size.getX() / 2 + 5.0)).rotate(angle);
         Vector2D bulletVel = Vector2D(0, -1).rotate(angle) * 2;
         bulletsPool->shoot(bulletPos,bulletVel,5,20);
-        // input[3]=false;
     }
 }
 void Vessel::CheckKeys()
@@ -133,7 +137,11 @@ void Vessel::drawHearts()
 void Vessel::LoseLife()
 {
     lives--;
-    if(lives<=0)lives=0;
+    if(lives<=0)
+    {
+        lives=0;
+        canPlay=false;
+    }
 }
 
 int Vessel::GetHealth()

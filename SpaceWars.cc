@@ -7,6 +7,7 @@
 #include "LoginMessage.h"
 
 #include "Vessel.h"
+#include "VesselWinManager.h"
 
 using namespace std;
 
@@ -39,52 +40,18 @@ void SpaceWars::initGameClient(const char *host, const char *port)
 	serverSd->send(msg, *serverSd);
 	msgQueue = new MessageQueue(serverSd, serverSd, true);
 
+
 	Vessel *player1 = new Vessel(game_, entityManager_, 0, Vector2D(120, 120), game_->getTextureMngr()->getTexture(Resources::Player1), SDLK_d, SDLK_a, SDLK_w,false, false, bulletsPool1);
 	entityManager_->addEntity(player1);
-
 	Vessel *player2 = new Vessel(game_, entityManager_, 1, Vector2D(300, 120), game_->getTextureMngr()->getTexture(Resources::Player2), SDLK_RIGHT, SDLK_LEFT, SDLK_UP,false, true, bulletsPool1);
 	entityManager_->addEntity(player2);
+	VesselWinManager* winMngr = new VesselWinManager(game_, entityManager_, 34,player1,player2);
+	entityManager_->addEntity(winMngr);
 
 	msgQueue->init(entityManager_->getEntities());
 	netMng = new NetManager(msgQueue);
 	netMng->init(entityManager_->getEntities());
-//nave
-#pragma region deprecated
-	// Entity *player1 = entityManager_->addEntity();
-	// Transform *player1TR = player1->addComponent<Transform>(msgQueue);
-	// player1->addComponent<VesselMovement>(msgQueue);
-	// player1->addComponent<VesselViewer>(msgQueue,game_->getTextureMngr()->getTexture(Resources::Player1));
-	// // Health* fighterHealth = player1->addComponent<Health>(game_->getTextureMngr()->getTexture(Resources::Heart));
-	// player1TR->setPos(game_->getWindowWidth() / 2, game_->getWindowHeight() / 2);
-	// player1TR->setWH(70, 70);
 
-	// Entity *player2 = entityManager_->addEntity();
-	// Transform *player2TR = player2->addComponent<Transform>(msgQueue);
-	// player2->addComponent<VesselViewer>(msgQueue,game_->getTextureMngr()->getTexture(Resources::Player2));
-	// player2->addComponent<NetVesselControl>(msgQueue,SDLK_d, SDLK_a, SDLK_w,true);
-	// player2TR->setPos(0, game_->getWindowHeight() / 2);
-	// player2TR->setWH(70, 70);
-
-	// // //pool de balas
-	// // Entity* bullets = entityManager_->addEntity();
-	// // BulletsPool* bPool= bullets->addComponent<BulletsPool>();
-	// // bullets->addComponent<BulletsMotion>();
-	// // bullets->addComponent<BulletsViewer>(game_->getTextureMngr()->getTexture(Resources::Bullet));
-
-	// fighter->addComponent<Gun>(bPool);
-
-	// //entidad de manejo del juego
-	// Entity* gameManager = entityManager_->addEntity();
-	// gameManager->addComponent<ScoreManager>(fighterHealth);
-	// gameManager->addComponent<GameCtrl>(fighterHealth,astPool);
-	// gameManager->addComponent<ScoreViewer>(astPool,fighterHealth);
-	// gameManager->addComponent<GameLogic>(fighterTR, astPool, bPool, fighterHealth);
-
-	//Configuracion del volumen de música y sonido
-	//game_->getAudioMngr()->setMusicVolume(40);
-	//game_->getAudioMngr()->setChannelVolume(5, 0);
-	//game_->getAudioMngr()->setChannelVolume(5, 1);
-#pragma endregion
 }
 
 void SpaceWars::initServer(const char *host, const char *port)
@@ -105,44 +72,19 @@ void SpaceWars::initServer(const char *host, const char *port)
 	// LoginMessage msg2(12);
 	// serverSd->send(msg2, *clientSd);
 
-	// entityManager_->addEntity(bulletsPool1);
-
-	// entityManager_->addEntity(asteroidPool);
-
+	
 	Vessel *player1 = new Vessel(game_, entityManager_, 0, Vector2D(120, 120), game_->getTextureMngr()->getTexture(Resources::Player1), SDLK_RIGHT, SDLK_LEFT, SDLK_UP, true, true, bulletsPool1);
 	entityManager_->addEntity(player1);
-
 	Vessel *player2 = new Vessel(game_, entityManager_, 1, Vector2D(300, 120), game_->getTextureMngr()->getTexture(Resources::Player2), SDLK_d, SDLK_a, SDLK_w, true, false, bulletsPool1);
 	entityManager_->addEntity(player2);
 
+	VesselWinManager* winMngr = new VesselWinManager(game_, entityManager_, 34,player1,player2);
+	entityManager_->addEntity(winMngr);
 	msgQueue->init(entityManager_->getEntities());
 
 	netMng = new NetManager(msgQueue);
 	netMng->init(entityManager_->getEntities());
-
-// //nave
-#pragma region deprecated
-	// Entity *player1 = entityManager_->addEntity();
-	// Transform *player1TR = player1->addComponent<Transform>(msgQueue);
-	// player1->addComponent<VesselControl>(msgQueue,SDLK_d, SDLK_a, SDLK_w);
-	// player1->addComponent<VesselMovement>(msgQueue);
-	// player1->addComponent<VesselViewer>(msgQueue,game_->getTextureMngr()->getTexture(Resources::Player1));
-	// // Health* fighterHealth = player1->addComponent<Health>(game_->getTextureMngr()->getTexture(Resources::Heart));
-	// player1TR->setPos(game_->getWindowWidth() / 2, game_->getWindowHeight() / 2);
-	// player1TR->setWH(70, 70);
-
-	// Entity *player2 = entityManager_->addEntity();
-	// Transform *player2TR = player2->addComponent<Transform>(msgQueue);
-	// player2->addComponent<NetVesselControl>(msgQueue,SDLK_d, SDLK_a, SDLK_w,false);
-	// player2->addComponent<VesselViewer>(msgQueue,game_->getTextureMngr()->getTexture(Resources::Player2));
-	// player2TR->setPos(0, game_->getWindowHeight() / 2);
-	// player2TR->setWH(70, 70);
-#pragma endregion
-	// CountMessage msg2(0);
-	// Message msgaccept(&msg2);
-	// msgaccept.send(*serverSd, *clientSd);
-	// msgQueue->addMsg(&msg2);
-	// msgQueue->flushSend();
+	
 }
 
 void SpaceWars::closeGame()

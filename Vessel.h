@@ -24,6 +24,10 @@ public:
     void calculatePos(Vector2D &position, Vector2D &vel);
     void LoseLife();
     int GetHealth();
+    bool isDead(){return lives<=0;}
+    bool getCanPlay(){return canPlay;}
+    void setCanPlay(bool b) {canPlay=b;}
+
 
 private:
     void CheckKeys();
@@ -50,4 +54,6 @@ private:
 
     int startTime;
     BulletsPool* bulletsPool;
+
+    bool canPlay;
 };

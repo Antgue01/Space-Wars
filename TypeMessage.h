@@ -12,7 +12,8 @@ public:
         Default,
         NetVessel,
         NetBullet,
-        NetAsteroid
+        NetAsteroid,
+        NetWinManager
     };
 
     TypeMessage(NetType t = Default) : Serializable(), myType_(t) {}
