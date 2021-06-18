@@ -16,7 +16,7 @@ private:
 	Texture *text;
 
 public:
-	Asteroid(SDLGame *g = nullptr, EntityManager *mngr = nullptr, MessageQueue *q = nullptr, int id = 0, bool client = false, Texture *t = nullptr) : Entity(g, mngr, q, TypeMessage::NetAsteroid, id)
+	Asteroid(SDLGame *g = nullptr, EntityManager *mngr = nullptr, int id = 0, bool client = false, Texture *t = nullptr) : Entity(g, mngr, TypeMessage::NetAsteroid, id)
 	{
 		angle = 0;
 		width = 25;

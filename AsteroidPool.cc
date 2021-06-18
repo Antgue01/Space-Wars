@@ -2,11 +2,11 @@
 #include "Bullet.h"
 
 using namespace std;
-AsteroidPool::AsteroidPool(SDLGame *game, EntityManager *mngr, MessageQueue *q, Resources::TextureId t, int id, int numAsteroits, bool client) : activeAsteroids(0), myAsteroids(), asteroidSize(10), asteroidIncrease(3), isClient_(client)
+AsteroidPool::AsteroidPool(SDLGame *game, EntityManager *mngr, Resources::TextureId t, int id, int numAsteroits, bool client) : activeAsteroids(0), myAsteroids(), asteroidSize(10), asteroidIncrease(3), isClient_(client)
 {
     for (int i = 0; i < NUM_ASTEROIDS; i++)
     {
-        myAsteroids.push_back(new Asteroid(game, mngr, q, id + i, client, game->getTextureMngr()->getTexture(t)));
+        myAsteroids.push_back(new Asteroid(game, mngr, id + i, client, game->getTextureMngr()->getTexture(t)));
         myAsteroids.back()->setInUse(false);
         mngr->addEntity(myAsteroids.at(i));
     }

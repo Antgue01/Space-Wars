@@ -1,6 +1,6 @@
 #include "Bullet.h"
 
-Bullet::Bullet(SDLGame *g, EntityManager *mngr, MessageQueue *q, int id, bool client, Texture *text) : Entity(g, mngr, q, TypeMessage::NetBullet, id)
+Bullet::Bullet(SDLGame *g, EntityManager *mngr, int id, bool client, Texture *text) : Entity(g, mngr, TypeMessage::NetBullet, id)
 {
 	pos = Vector2D(0, 0);
 	vel = Vector2D(0, 0);

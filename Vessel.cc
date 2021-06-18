@@ -2,7 +2,7 @@
 #include "SDL_macros.h"
 #include "Message.h"
 
-Vessel::Vessel(SDLGame *game, EntityManager *mngr, int _id, Vector2D pos_, Texture *t_, SDL_Keycode right_, SDL_Keycode left_, SDL_Keycode up_, MessageQueue *q, bool sendInp, bool checkkeys_ ,BulletsPool* bp) : Entity(game, mngr, q, TypeMessage::NetVessel, _id), speed(1), thrust(1), velocity(), pos(pos_), size(Vector2D(70, 70)), angle(0.0), t(t_),
+Vessel::Vessel(SDLGame *game, EntityManager *mngr, int _id, Vector2D pos_, Texture *t_, SDL_Keycode right_, SDL_Keycode left_, SDL_Keycode up_, bool sendInp, bool checkkeys_ ,BulletsPool* bp) : Entity(game, mngr, TypeMessage::NetVessel, _id), speed(1), thrust(1), velocity(), pos(pos_), size(Vector2D(70, 70)), angle(0.0), t(t_),
                                                                                                                                                                                                                        right(right_), left(left_), up(up_), input(), server(sendInp), checkkeys(checkkeys_), startTime(0) ,bulletsPool(bp)
 
 {
@@ -11,7 +11,7 @@ Vessel::Vessel(SDLGame *game, EntityManager *mngr, int _id, Vector2D pos_, Textu
     input.assign(4, false);
     startTime = game_->getTime();
 }
-Vessel::Vessel() : Entity(nullptr, nullptr, nullptr, TypeMessage::NetVessel, 0), t(nullptr), pos(), size(), angle(0), speed(),
+Vessel::Vessel() : Entity(nullptr, nullptr, TypeMessage::NetVessel, 0), t(nullptr), pos(), size(), angle(0), speed(),
                    velocity(velocity), rotSpeed(), limitX(), limitY(), right(), left(), up(), thrust(), input(), server(false), checkkeys(false)
 {
     input.assign(4, false);

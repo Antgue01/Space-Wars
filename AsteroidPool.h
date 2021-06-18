@@ -18,7 +18,7 @@ private:
     Asteroid *getObj();
 
 public:
-    AsteroidPool(SDLGame *game = nullptr, EntityManager *mngr = nullptr, MessageQueue *q = nullptr, Resources::TextureId t = Resources::Asteroid, int id = -1, int numAsteroits = 0, bool client = false);
+    AsteroidPool(SDLGame *game = nullptr, EntityManager *mngr = nullptr, Resources::TextureId t = Resources::Asteroid, int id = -1, int numAsteroits = 0, bool client = false);
     virtual ~AsteroidPool();
     void generateAsteroids(int n);
     void disableAll();

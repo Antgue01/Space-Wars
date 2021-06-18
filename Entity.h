@@ -6,74 +6,32 @@
 #include "SDLGame.h"
 #include "Serializable.h"
 #include "TypeMessage.h"
-class MessageQueue;
 class EntityManager;
 
 class Entity : public Serializable
 {
 public:
-	Entity(SDLGame *game, EntityManager *mngr, MessageQueue *queue, TypeMessage::NetType t, int id);
+	Entity(SDLGame *game, EntityManager *mngr,TypeMessage::NetType t, int id);
 	virtual ~Entity();
 
 	EntityManager *getEntityMangr()
 	{
 		return mngr_;
 	}
+
 	inline bool getInUse() { return inUse; }
 	inline void setInUse(bool v) { inUse = v; }
 	inline int getId() { return id_; }
 	inline TypeMessage::NetType getType() { return myType_; }
-	// template <typename T, typename... TArgs>
-	// T *addComponent(TArgs &&... mArgs)
-	// {
-	// 	T *c(new T(std::forward<TArgs>(mArgs)...));
-	// 	std::unique_ptr<Component> uPtr(c);
-	// 	components_.push_back(std::move(uPtr));
-	// 	componentsArray_[c->getId()] = c;
-	// 	c->setEntity(this);
-	// 	c->setGame(game_);
-	// 	c->init();
-	// 	return c;
-	// }
-
-	// template <typename T>
-	// T *getComponent(ecs::CmpIdType id)
-	// {
-	// 	return static_cast<T *>(componentsArray_[id]);
-	// }
-
-	// bool hasComponent(ecs::CmpIdType id)
-	// {
-	// 	return componentsArray_[id] != nullptr;
-	// }
 
 	virtual void update() = 0;
-	// {
-	// 	for (auto &c : components_)
-	// 	{
-	// 		c->update();
-	// 	}
-	// }
-
 	virtual void draw() = 0;
-	// {
-	// 	for (auto &c : components_)
-	// 	{
-	// 		c->draw();
-	// 	}
-	// }
-	// std::vector<unique_ptr<Component>> &getComponents() { return components_; }
 	virtual void deliverMsg(Entity *msg) = 0;
 
 protected:
 	SDLGame *game_;
 	EntityManager *mngr_;
-	MessageQueue *queue_;
 	TypeMessage::NetType myType_;
 	int id_;
 	bool inUse;
-	virtual void Send(Serializable *ser);
-
-	// std::vector<unique_ptr<Component>> components_;
-	// std::array<Component *, ecs::maxComponents> componentsArray_ = {};
 };

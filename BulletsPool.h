@@ -3,7 +3,6 @@
 #include "Bullet.h"
 #include "Collisions.h"
 #include "SDLGame.h"
-#include "MessageQueue.h"
 #include "Texture.h"
 #define NUM_BULLETS 20
 class BulletsPool {
@@ -12,7 +11,7 @@ private:
 
 
 public:
-	BulletsPool(SDLGame *game, EntityManager *mngr, int _id, MessageQueue *q,Resources::TextureId _t,bool client);
+	BulletsPool(SDLGame *game, EntityManager *mngr, int _id,Resources::TextureId _t,bool client);
     BulletsPool();
 	virtual ~BulletsPool() {  }
 

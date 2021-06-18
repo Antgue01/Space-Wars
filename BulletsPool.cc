@@ -2,11 +2,11 @@
 #include "Message.h"
 #include "SDL_macros.h"
 
-BulletsPool::BulletsPool(SDLGame *game, EntityManager *mngr, int _id, MessageQueue *q, Resources::TextureId _t, bool client)
+BulletsPool::BulletsPool(SDLGame *game, EntityManager *mngr, int _id, Resources::TextureId _t, bool client)
 {
 	for (int i = 0; i < NUM_BULLETS; i++)
 	{
-		myBullets.push_back(new Bullet(game, mngr, q, _id + i, client, game->getTextureMngr()->getTexture(_t)));
+		myBullets.push_back(new Bullet(game, mngr, _id + i, client, game->getTextureMngr()->getTexture(_t)));
 		myBullets.back()->setInUse(false);
 		mngr->addEntity(myBullets.at(i));
 	}

@@ -13,9 +13,9 @@ private:
 	bool isClient_;
 
 public:
-	Bullet(SDLGame *g = nullptr, EntityManager *mngr = nullptr, MessageQueue *q = nullptr, int id = 0, bool client = false, Texture *text = nullptr); 
+	Bullet(SDLGame *g = nullptr, EntityManager *mngr = nullptr,int id = 0, bool client = false, Texture *text = nullptr); 
 
-	~Bullet() { };
+	~Bullet() {t=nullptr; };
 	void setPos(Vector2D p) { pos = p; };
 	void setVel(Vector2D v) { vel = v; };
 	void setRot(int r) { rotation = r; };
