@@ -3,16 +3,17 @@
 #include "Message.h"
 
 Vessel::Vessel(SDLGame *game, EntityManager *mngr, int _id, Vector2D pos_, Texture *t_, SDL_Keycode right_, SDL_Keycode left_, SDL_Keycode up_, bool sendInp, bool checkkeys_ ,BulletsPool* bp) : Entity(game, mngr, TypeMessage::NetVessel, _id), speed(1), thrust(1), velocity(), pos(pos_), size(Vector2D(70, 70)), angle(0.0), t(t_),
-                                                                                                                                                                                                                       right(right_), left(left_), up(up_), input(), server(sendInp), checkkeys(checkkeys_), startTime(0) ,bulletsPool(bp)
+                                                                                                                                                                                                                       right(right_), left(left_), up(up_), input(), server(sendInp), checkkeys(checkkeys_), startTime(0) ,bulletsPool(bp),lives(3)
 
 {
+    tHeart = game->getTextureMngr()->getTexture(Resources::Heart);
     limitX = SDLGame::instance()->getWindowWidth();
     limitY = SDLGame::instance()->getWindowHeight();
     input.assign(4, false);
     startTime = game_->getTime();
 }
 Vessel::Vessel() : Entity(nullptr, nullptr, TypeMessage::NetVessel, 0), t(nullptr), pos(), size(), angle(0), speed(),
-                   velocity(velocity), rotSpeed(), limitX(), limitY(), right(), left(), up(), thrust(), input(), server(false), checkkeys(false)
+                   velocity(velocity), rotSpeed(), limitX(), limitY(), right(), left(), up(), thrust(), input(), server(false), checkkeys(false),lives(3)
 {
     input.assign(4, false);
 }
@@ -21,6 +22,7 @@ Vessel::~Vessel()
 {
     t = nullptr;
     bulletsPool = nullptr;
+    tHeart=nullptr;
 }
 
 void Vessel::update()
@@ -112,11 +114,37 @@ void Vessel::draw()
 {
     SDL_Rect dest = {pos.getX(), pos.getY(), size.getX(), size.getY()};
     t->render(dest, angle);
+
+    drawHearts();
 }
+
+void Vessel::drawHearts()
+{
+    int i = 0;
+	SDL_Rect dest = { 10,10,40,40 };
+	while (i < lives)
+	{
+		dest.x= 10 + (i*40);
+		tHeart->render(dest);
+		i++;
+	}
+}
+
+void Vessel::LoseLife()
+{
+    lives--;
+    if(lives<=0)lives=0;
+}
+
+int Vessel::GetHealth()
+{
+    return lives;
+}
+
 
 void Vessel::to_bin()
 {
-    int size = sizeof(int) * 5 + sizeof(double) * 3;
+    int size = sizeof(int) * 6 + sizeof(double) * 3;
     alloc_data(size);
     memset(_data, 0, size);
     char *aux = _data;
@@ -129,6 +157,9 @@ void Vessel::to_bin()
         memcpy(aux, &auxBool, sizeof(int));
         aux += sizeof(int);
     }
+
+    memcpy(aux, &lives, sizeof(int));
+    aux += sizeof(int);
 
     double auxD = pos.getX();
     memcpy(aux, &auxD, sizeof(double));
@@ -147,7 +178,7 @@ int Vessel::from_bin(char *data)
         std::cout << "Error on deserialization, empty object received\n";
         return -1;
     }
-    int size = sizeof(int) * 5 + 3 * sizeof(double);
+    int size = sizeof(int) * 6 + 3 * sizeof(double);
 
     alloc_data(size);
 
@@ -161,6 +192,9 @@ int Vessel::from_bin(char *data)
         input.at(i) = auxBool;
         data += sizeof(int);
     }
+
+    memcpy(&lives, data, sizeof(int));
+    data += sizeof(int);
 
     double auxD;
     memcpy(&auxD, data, sizeof(double));

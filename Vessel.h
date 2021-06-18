@@ -22,9 +22,14 @@ public:
     virtual int from_bin(char *data);
     virtual void deliverMsg(Entity *msg);
     void calculatePos(Vector2D &position, Vector2D &vel);
+    void LoseLife();
+    int GetHealth();
 
 private:
     void CheckKeys();
+    void drawHearts();
+
+    int lives;
 
     Vector2D pos;
     Vector2D size;
@@ -34,6 +39,7 @@ private:
     double rotSpeed;
     int limitX, limitY;
 
+    Texture* tHeart;
     Texture *t;
     SDL_Keycode right;
     SDL_Keycode left;
