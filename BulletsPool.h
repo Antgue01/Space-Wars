@@ -5,31 +5,24 @@
 #include "SDLGame.h"
 #include "MessageQueue.h"
 #include "Texture.h"
-
-class BulletsPool : public Entity
-{
+#define NUM_BULLETS 20
+class BulletsPool {
 private:
+    std::vector<Bullet *> myBullets;
 
-	// ObjectPool<Bullet, 20> bulletsPool;
-    Texture* t;
 
 public:
-	BulletsPool(SDLGame *game, EntityManager *mngr, int _id, MessageQueue *q,Texture* _t);
+	BulletsPool(SDLGame *game, EntityManager *mngr, int _id, MessageQueue *q,Resources::TextureId _t,bool client);
     BulletsPool();
-	virtual ~BulletsPool() { t=nullptr; }
+	virtual ~BulletsPool() {  }
 
-    virtual void update();
-    virtual void draw();
-    virtual void to_bin();
-    virtual int from_bin(char *data);
-    virtual void deliverMsg(Entity *msg);
 
 	//"Crea" una bala cogiendola del pool
 	void shoot(Vector2D pos, Vector2D vel, double w, double h);
 
 	//Desactiva todas las balas que estén en uso
 	void disablAll();
-
+	Bullet* getObj();
 	//Comprueba si una bala y un asteroide colisonan
 	//void onCollision(Bullet* b, Asteroid* a);
 

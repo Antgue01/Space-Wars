@@ -1,7 +1,7 @@
 #pragma once
 #include"Vector2D.h"
-
-class Bullet
+#include "Entity.h"
+class Bullet:public Entity
 {
 private:
 	Vector2D pos;
@@ -9,13 +9,13 @@ private:
 	double w;
 	double h;
 	double rotation;
-	bool inUse = false;
+	Texture* t;
+	bool isClient_;
 
 public:
-	Bullet();
+	Bullet(SDLGame *g = nullptr, EntityManager *mngr = nullptr, MessageQueue *q = nullptr, int id = 0, bool client = false, Texture *text = nullptr); 
+
 	~Bullet() { };
-	bool GetInUse() { return inUse; }
- 	void SetInUse(bool b) { inUse = b; }
 	void setPos(Vector2D p) { pos = p; };
 	void setVel(Vector2D v) { vel = v; };
 	void setRot(int r) { rotation = r; };
@@ -26,5 +26,10 @@ public:
 	int getRot() { return rotation; };
 	Vector2D getPos() { return pos; };
 	Vector2D getVel() { return vel; };
+	virtual void update();
+    virtual void draw();
+    virtual void to_bin();
+    virtual int from_bin(char *data);
+    virtual void deliverMsg(Entity *msg);
 	
 };

@@ -2,7 +2,7 @@
 #include "Message.h"
 #include "Vessel.h"
 #include "DefaultEntity.h"
-// #include "BulletsPool.h"
+#include "Bullet.h"
 #include "Asteroid.h"
 
 void MessageQueue::flushSend()
@@ -57,14 +57,14 @@ Entity *MessageQueue::netTypeSwitch(TypeMessage::NetType t)
     {
 
         Vessel *a = new Vessel();
-        a->getInput().assign(3, false);
+        a->getInput().assign(4, false);
         return a;
         break;
     }
-    case TypeMessage::NetBulletsPool:
+    case TypeMessage::NetBullet:
     {
-        // BulletsPool* b = new BulletsPool();
-        // return b;
+        Bullet* b = new Bullet();
+        return b;
         break;
     }
     case TypeMessage::NetAsteroid:

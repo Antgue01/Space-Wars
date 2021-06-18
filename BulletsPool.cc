@@ -2,85 +2,55 @@
 #include "Message.h"
 #include "SDL_macros.h"
 
-// BulletsPool::BulletsPool(SDLGame *game, EntityManager *mngr, int _id, MessageQueue *q,Texture* _t) : Entity(game, mngr, q, TypeMessage::NetBulletsPool, _id), bulletsPool([](Bullet* o) { return o->GetInUse(); }),t(_t)
-// {
-// }
+BulletsPool::BulletsPool(SDLGame *game, EntityManager *mngr, int _id, MessageQueue *q, Resources::TextureId _t, bool client)
+{
+	for (int i = 0; i < NUM_BULLETS; i++)
+	{
+		myBullets.push_back(new Bullet(game, mngr, q, _id + i, client, game->getTextureMngr()->getTexture(_t)));
+		myBullets.back()->setInUse(false);
+		mngr->addEntity(myBullets.at(i));
+	}
+}
 
-// BulletsPool::BulletsPool():Entity(nullptr, nullptr, nullptr, TypeMessage::NetVessel, 2),bulletsPool([](Bullet* o) { return o->GetInUse(); }),t(nullptr)
-// {
+void BulletsPool::shoot(Vector2D pos, Vector2D vel, double w, double h)
+{
+	Bullet *newBullet = getObj();
+	//Se busca una bala no en uso y se configura para poder usarla
+	if (newBullet != nullptr)
+	{
+		newBullet->setInUse(true);
+		newBullet->setPos(pos);
+		newBullet->setVel(vel);
+		newBullet->setW(w);
+		newBullet->setH(h);
+		newBullet->setRot(Vector2D(0, -1).angle(vel));
+	}
+}
 
-// }
+void BulletsPool::disablAll()
+{
+	for (Bullet *a : myBullets)
+	{
+		a->setInUse(false);
+	}
+}
 
-// void BulletsPool::update()
-// {
-//     for(auto& a:bulletsPool.getPool())
-// 	{
-// 		if (a->GetInUse())
-// 		{
-//            Vector2D pos = a->getPos() + a->getVel();
-// 		   if (pos.getY() <= 0 || pos.getY() >= game_->getWindowHeight() || pos.getX() <= 0 || pos.getX() >= game_->getWindowWidth())
-// 		   {
-// 			   a->SetInUse(false);
-// 		   }
-
-// 		   a->setPos(pos);
-// 		}		
-// 	}
-// }
-
-// void BulletsPool::draw()
-// {
-//     for (auto& a : bulletsPool.getPool())
-// 	{
-// 		if (a->GetInUse())
-// 		{
-// 			SDL_Rect dest = { a->getPos().getX(),a->getPos().getY(),a->getW(),a->getH() };
-// 			t->render(dest, a->getRot());
-// 		}
-// 	}
-// }
-
-// void BulletsPool::to_bin()
-// {
-
-// }
-
-// int BulletsPool::from_bin(char *data)
-// {
-//     return 0;
-// }
-
-
-// void BulletsPool::deliverMsg(Entity *msg)
-// {
-
-// }
-
-
-// void BulletsPool::shoot(Vector2D pos, Vector2D vel, double w, double h) {
-// 	Bullet* newBullet = bulletsPool.getObj();
-// 	//Se busca una bala no en uso y se configura para poder usarla
-// 	if (newBullet != nullptr)
-// 	{
-//        newBullet->SetInUse(true);
-// 	   newBullet->setPos(pos);
-// 	   newBullet->setVel(vel);
-// 	   newBullet->setW(w);
-// 	   newBullet->setH(h);
-// 	   newBullet->setRot(Vector2D(0,-1).angle(vel));
-// 	}
-// }
-
-// void BulletsPool::disablAll() {
-// 	for (Bullet* a : bulletsPool.getPool()) {
-// 		a->SetInUse(false);
-// 	}
-// }
-
-// const vector<Bullet*>& BulletsPool::getPool() {
-// 	return bulletsPool.getPool();
-// }
-
+const vector<Bullet *> &BulletsPool::getPool()
+{
+	return myBullets;
+}
+Bullet *BulletsPool::getObj()
+{
+    int i = 0;
+    Bullet *selected = nullptr;
+    while (i < myBullets.size() && selected == nullptr)
+    {
+        if (!myBullets.at(i)->getInUse())
+            selected = myBullets.at(i);
+        i++;
+    }
+    return selected;
+}
 /*
 void BulletsPool::onCollision(Bullet* b, Asteroid* a) {
 	if (Collisions::collidesWithRotation(b->getPos(), b->getW(), b->getH(), b->getRot(), a->getPos(), a->getW(), a->getH() ,a->getRot())) {

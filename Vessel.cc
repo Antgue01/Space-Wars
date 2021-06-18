@@ -2,25 +2,25 @@
 #include "SDL_macros.h"
 #include "Message.h"
 
-Vessel::Vessel(SDLGame *game, EntityManager *mngr, int _id, Vector2D pos_, Texture *t_, SDL_Keycode right_, SDL_Keycode left_, SDL_Keycode up_, MessageQueue *q, bool sendInp, bool checkkeys_/*,BulletsPool* bp*/) : Entity(game, mngr, q, TypeMessage::NetVessel, _id), speed(1), thrust(1), velocity(), pos(pos_), size(Vector2D(70, 70)), angle(0.0), t(t_),
-                                                                                                                                                                                                  right(right_), left(left_), up(up_), input(), server(sendInp), checkkeys(checkkeys_),startTime(0)/*,bulletsPool(bp)*/
+Vessel::Vessel(SDLGame *game, EntityManager *mngr, int _id, Vector2D pos_, Texture *t_, SDL_Keycode right_, SDL_Keycode left_, SDL_Keycode up_, MessageQueue *q, bool sendInp, bool checkkeys_ ,BulletsPool* bp) : Entity(game, mngr, q, TypeMessage::NetVessel, _id), speed(1), thrust(1), velocity(), pos(pos_), size(Vector2D(70, 70)), angle(0.0), t(t_),
+                                                                                                                                                                                                                       right(right_), left(left_), up(up_), input(), server(sendInp), checkkeys(checkkeys_), startTime(0) ,bulletsPool(bp)
 
 {
     limitX = SDLGame::instance()->getWindowWidth();
     limitY = SDLGame::instance()->getWindowHeight();
-    input.assign(3, false);
+    input.assign(4, false);
     startTime = game_->getTime();
 }
-Vessel::Vessel() : Entity(nullptr, nullptr, nullptr, TypeMessage::NetVessel, 0) ,t(nullptr), pos(), size(), angle(0), speed(),  
-velocity(velocity), rotSpeed(), limitX(), limitY(), right(), left(), up(), thrust(), input(), server(false),checkkeys(false) 
-{ 
-    input.assign(3,false);
+Vessel::Vessel() : Entity(nullptr, nullptr, nullptr, TypeMessage::NetVessel, 0), t(nullptr), pos(), size(), angle(0), speed(),
+                   velocity(velocity), rotSpeed(), limitX(), limitY(), right(), left(), up(), thrust(), input(), server(false), checkkeys(false)
+{
+    input.assign(4, false);
 }
-             
+
 Vessel::~Vessel()
 {
     t = nullptr;
-    // bulletsPool = nullptr;
+    bulletsPool = nullptr;
 }
 
 void Vessel::update()
@@ -66,6 +66,13 @@ void Vessel::calculatePos(Vector2D &position, Vector2D &vel)
     vel.set(vel * 0.995);
     //Pongo la velocidad
     position.set(position + vel);
+    if (input[3])
+    {
+        Vector2D bulletPos = pos + Vector2D(size.getX() / 2, size.getY() / 2) + Vector2D(0, -(size.getX() / 2 + 5.0)).rotate(angle);
+        Vector2D bulletVel = Vector2D(0, -1).rotate(angle) * 2;
+        bulletsPool->shoot(bulletPos,bulletVel,5,20);
+        // input[3]=false;
+    }
 }
 void Vessel::CheckKeys()
 {
@@ -90,23 +97,15 @@ void Vessel::CheckKeys()
         {
             input[2] = true;
         }
+        if (ih->isKeyDown(SDLK_SPACE) && game_->getTime() >= startTime + 250)
+        {
+            input[3] = true;
+            startTime = game_->getTime(); //Reseteamos el tiempo de retroceso
+        }
+        
     }
     else
-        input.assign(3, false);
-
-
-    if (ih->keyDownEvent() )
-	{
-		//Si se pulsa el espacio y se ha cumplido el tiempo de retroceso, dispara una bala en la direccion de la nave
-		if (ih->isKeyDown(SDLK_SPACE) && game_->getTime() >= startTime + 250)
-		{
-			Vector2D bulletPos = pos + Vector2D(size.getX() / 2, size.getY() / 2) + Vector2D(0, -(size.getX() / 2 + 5.0)).rotate(angle);
-			Vector2D bulletVel = Vector2D(0, -1).rotate(angle) * 2;
-			// bulletsPool->shoot(bulletPos,bulletVel,5,20);
-
-			startTime = game_->getTime();	//Reseteamos el tiempo de retroceso
-		}		
-	}
+        input.assign(4, false);
 }
 
 void Vessel::draw()
@@ -117,14 +116,14 @@ void Vessel::draw()
 
 void Vessel::to_bin()
 {
-    int size = sizeof(int) * 4 + sizeof(double) * 3;
+    int size = sizeof(int) * 5 + sizeof(double) * 3;
     alloc_data(size);
     memset(_data, 0, size);
     char *aux = _data;
     memcpy(aux, &id_, sizeof(int));
     aux += sizeof(int);
     int auxBool;
-    for (size_t i = 0; i < 3; i++)
+    for (size_t i = 0; i < 4; i++)
     {
         auxBool = input.at(i);
         memcpy(aux, &auxBool, sizeof(int));
@@ -139,7 +138,6 @@ void Vessel::to_bin()
     aux += sizeof(double);
     auxD = angle;
     memcpy(aux, &auxD, sizeof(double));
-  
 }
 
 int Vessel::from_bin(char *data)
@@ -149,7 +147,7 @@ int Vessel::from_bin(char *data)
         std::cout << "Error on deserialization, empty object received\n";
         return -1;
     }
-    int size = sizeof(int) * 4 + 3 * sizeof(double) ;
+    int size = sizeof(int) * 5 + 3 * sizeof(double);
 
     alloc_data(size);
 
@@ -157,10 +155,10 @@ int Vessel::from_bin(char *data)
     memcpy(&id_, data, sizeof(int));
     data += sizeof(int);
     int auxBool;
-    for (size_t i = 0; i < 3; i++)
+    for (size_t i = 0; i < 4; i++)
     {
         memcpy(&auxBool, data, sizeof(int));
-        input.at(i)=auxBool;
+        input.at(i) = auxBool;
         data += sizeof(int);
     }
 

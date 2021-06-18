@@ -11,7 +11,7 @@ public:
     {
         Default,
         NetVessel,
-        NetBulletsPool,
+        NetBullet,
         NetAsteroid
     };
 

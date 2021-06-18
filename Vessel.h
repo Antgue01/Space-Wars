@@ -5,13 +5,12 @@
 #include "SDLGame.h"
 #include "Entity.h"
 #include "MessageQueue.h"
-// #include "BulletsPool.h"
+#include "BulletsPool.h"
 
 class Vessel : public Entity
 {
 public:
-    Vessel(SDLGame *game, EntityManager *mngr, int _id, Vector2D pos_, Texture *t_, SDL_Keycode right_, SDL_Keycode left_, SDL_Keycode up_, MessageQueue *q, bool isServer, bool checkkeys_//,BulletsPool* bp
-    );
+    Vessel(SDLGame *game, EntityManager *mngr, int _id, Vector2D pos_, Texture *t_, SDL_Keycode right_, SDL_Keycode left_, SDL_Keycode up_, MessageQueue *q, bool isServer, bool checkkeys_,BulletsPool* bp);
 
     Vessel();                                                                                                                       
 
@@ -45,5 +44,5 @@ private:
     bool checkkeys;
 
     int startTime;
-    // BulletsPool* bulletsPool;
+    BulletsPool* bulletsPool;
 };
