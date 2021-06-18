@@ -8,6 +8,7 @@
 #include  "MessageQueue.h"
 #include "AsteroidPool.h"
 #include "NetManager.h"
+#include "GameLogic.h"
 class SpaceWars {
 
 public:
@@ -35,10 +36,10 @@ private:
     Socket* serverSd;
     MessageQueue* msgQueue;
     NetManager* netMng;
-    AsteroidPool* asteroidPool_;
+    GameLogic* logic_;
     bool exit_;
     
-    const static int _WINDOW_WIDTH_ = 640;
-    const static int _WINDOW_HEIGHT_ = 480;
+    const static int _WINDOW_WIDTH_ = 800;
+    const static int _WINDOW_HEIGHT_ = 600;
 
 };

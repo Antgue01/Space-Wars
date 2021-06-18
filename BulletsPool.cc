@@ -1,6 +1,8 @@
 #include "BulletsPool.h"
 #include "Message.h"
 #include "SDL_macros.h"
+#include "Asteroid.h"
+#include "Vessel.h"
 
 BulletsPool::BulletsPool(SDLGame *game, EntityManager *mngr, int _id, Resources::TextureId _t, bool client)
 {
@@ -27,7 +29,7 @@ void BulletsPool::shoot(Vector2D pos, Vector2D vel, double w, double h)
 	}
 }
 
-void BulletsPool::disablAll()
+void BulletsPool::disableAll()
 {
 	for (Bullet *a : myBullets)
 	{
@@ -41,20 +43,25 @@ const vector<Bullet *> &BulletsPool::getPool()
 }
 Bullet *BulletsPool::getObj()
 {
-    int i = 0;
-    Bullet *selected = nullptr;
-    while (i < myBullets.size() && selected == nullptr)
-    {
-        if (!myBullets.at(i)->getInUse())
-            selected = myBullets.at(i);
-        i++;
-    }
-    return selected;
-}
-/*
-void BulletsPool::onCollision(Bullet* b, Asteroid* a) {
-	if (Collisions::collidesWithRotation(b->getPos(), b->getW(), b->getH(), b->getRot(), a->getPos(), a->getW(), a->getH() ,a->getRot())) {
-		b->SetInUse(false);
+	int i = 0;
+	Bullet *selected = nullptr;
+	while (i < myBullets.size() && selected == nullptr)
+	{
+		if (!myBullets.at(i)->getInUse())
+			selected = myBullets.at(i);
+		i++;
 	}
+	return selected;
 }
-*/
+
+void BulletsPool::onCollision(Bullet *b, Asteroid *a)
+{
+	b->setInUse(false);
+}
+void BulletsPool::onCollision(Bullet *b, Vessel *ve)
+{
+	b->setInUse(false);
+	ve->LoseLife();
+	ve->Reset();
+	disableAll();
+}

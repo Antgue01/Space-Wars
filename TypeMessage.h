@@ -13,7 +13,7 @@ public:
         NetVessel,
         NetBullet,
         NetAsteroid,
-        NetWinManager
+        NetGameLogic
     };
 
     TypeMessage(NetType t = Default) : Serializable(), myType_(t) {}

@@ -4,6 +4,8 @@
 #include "Collisions.h"
 #include "SDLGame.h"
 #include "Texture.h"
+class Asteroid;
+class Vessel;
 #define NUM_BULLETS 20
 class BulletsPool {
 private:
@@ -20,10 +22,12 @@ public:
 	void shoot(Vector2D pos, Vector2D vel, double w, double h);
 
 	//Desactiva todas las balas que estén en uso
-	void disablAll();
+	void disableAll();
 	Bullet* getObj();
 	//Comprueba si una bala y un asteroide colisonan
-	//void onCollision(Bullet* b, Asteroid* a);
+	void onCollision(Bullet* b, Asteroid* a);
+	//Comprueba si una bala y un caza colisonan
+	void onCollision(Bullet* b, Vessel* ve);
 
 	//Getter del vector de balas de la pool
 	const vector<Bullet*>& getPool();

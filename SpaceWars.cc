@@ -33,25 +33,26 @@ void SpaceWars::initGameClient(const char *host, const char *port)
 	game_ = SDLGame::init("client", _WINDOW_WIDTH_, _WINDOW_HEIGHT_);
 
 	entityManager_ = new EntityManager(game_);
-	BulletsPool *bulletsPool1 = new BulletsPool(game_, entityManager_, 33, Resources::Bullet,true);
-	asteroidPool_ = new AsteroidPool(game_, entityManager_, Resources::Asteroid, 3, 20, true);
+	AsteroidPool *asteroidPool_ = new AsteroidPool(game_, entityManager_, Resources::Asteroid, 3, 20, true);
+	BulletsPool *bulletsPool1 = new BulletsPool(game_, entityManager_, 33, Resources::Bullet, true);
 	LoginMessage msg(1);
 	serverSd = new Socket(host, port);
 	serverSd->send(msg, *serverSd);
 	msgQueue = new MessageQueue(serverSd, serverSd, true);
+	logic_ = nullptr;
 
+	double w = SDLGame::instance()->getWindowWidth() / 2;
 
-	Vessel *player1 = new Vessel(game_, entityManager_, 0, Vector2D(120, 120), game_->getTextureMngr()->getTexture(Resources::Player1), SDLK_d, SDLK_a, SDLK_w,false, false, bulletsPool1);
+	Vessel *player1 = new Vessel(game_, entityManager_, 0, Vector2D(w - (w / 2), SDLGame::instance()->getWindowHeight() / 2), game_->getTextureMngr()->getTexture(Resources::Player1), SDLK_d, SDLK_a, SDLK_w, false, false, bulletsPool1);
 	entityManager_->addEntity(player1);
-	Vessel *player2 = new Vessel(game_, entityManager_, 1, Vector2D(300, 120), game_->getTextureMngr()->getTexture(Resources::Player2), SDLK_RIGHT, SDLK_LEFT, SDLK_UP,false, true, bulletsPool1);
+	Vessel *player2 = new Vessel(game_, entityManager_, 1, Vector2D(w + (w / 2), SDLGame::instance()->getWindowHeight() / 2), game_->getTextureMngr()->getTexture(Resources::Player2), SDLK_RIGHT, SDLK_LEFT, SDLK_UP, false, true, bulletsPool1);
 	entityManager_->addEntity(player2);
-	VesselWinManager* winMngr = new VesselWinManager(game_, entityManager_, 34,player1,player2);
+	VesselWinManager *winMngr = new VesselWinManager(game_, entityManager_, 34, player1, player2);
 	entityManager_->addEntity(winMngr);
 
 	msgQueue->init(entityManager_->getEntities());
 	netMng = new NetManager(msgQueue);
 	netMng->init(entityManager_->getEntities());
-
 }
 
 void SpaceWars::initServer(const char *host, const char *port)
@@ -59,8 +60,8 @@ void SpaceWars::initServer(const char *host, const char *port)
 	game_ = SDLGame::init("server", _WINDOW_WIDTH_, _WINDOW_HEIGHT_);
 
 	entityManager_ = new EntityManager(game_);
-	asteroidPool_ = new AsteroidPool(game_, entityManager_, Resources::Asteroid, 3, 20,false);
-	BulletsPool *bulletsPool1 = new BulletsPool(game_, entityManager_,33, Resources::Bullet,false);
+	AsteroidPool *asteroidPool_ = new AsteroidPool(game_, entityManager_, Resources::Asteroid, 3, 20, false);
+	BulletsPool *bulletsPool1 = new BulletsPool(game_, entityManager_, 33, Resources::Bullet, false);
 	serverSd = new Socket(host, port);
 	serverSd->bind();
 
@@ -72,19 +73,19 @@ void SpaceWars::initServer(const char *host, const char *port)
 	// LoginMessage msg2(12);
 	// serverSd->send(msg2, *clientSd);
 
-	
-	Vessel *player1 = new Vessel(game_, entityManager_, 0, Vector2D(120, 120), game_->getTextureMngr()->getTexture(Resources::Player1), SDLK_RIGHT, SDLK_LEFT, SDLK_UP, true, true, bulletsPool1);
+	double w = SDLGame::instance()->getWindowWidth() / 2;
+	Vessel *player1 = new Vessel(game_, entityManager_, 0, Vector2D(w - (w / 2), SDLGame::instance()->getWindowHeight() / 2), game_->getTextureMngr()->getTexture(Resources::Player1), SDLK_RIGHT, SDLK_LEFT, SDLK_UP, true, true, bulletsPool1);
 	entityManager_->addEntity(player1);
-	Vessel *player2 = new Vessel(game_, entityManager_, 1, Vector2D(300, 120), game_->getTextureMngr()->getTexture(Resources::Player2), SDLK_d, SDLK_a, SDLK_w, true, false, bulletsPool1);
+	Vessel *player2 = new Vessel(game_, entityManager_, 1, Vector2D(w + (w / 2), SDLGame::instance()->getWindowHeight() / 2), game_->getTextureMngr()->getTexture(Resources::Player2), SDLK_d, SDLK_a, SDLK_w, true, false, bulletsPool1);
 	entityManager_->addEntity(player2);
+	logic_ = new GameLogic(player1, player2, asteroidPool_, bulletsPool1, this);
 
-	VesselWinManager* winMngr = new VesselWinManager(game_, entityManager_, 34,player1,player2);
+	VesselWinManager *winMngr = new VesselWinManager(game_, entityManager_, 34, player1, player2);
 	entityManager_->addEntity(winMngr);
 	msgQueue->init(entityManager_->getEntities());
 
 	netMng = new NetManager(msgQueue);
 	netMng->init(entityManager_->getEntities());
-	
 }
 
 void SpaceWars::closeGame()
@@ -94,7 +95,7 @@ void SpaceWars::closeGame()
 	delete serverSd;
 	delete msgQueue;
 	game_->closeSDL();
-	delete asteroidPool_;
+	delete logic_;
 }
 
 void SpaceWars::start()
@@ -113,6 +114,8 @@ void SpaceWars::start()
 		netMng->recieve();
 		handleInput();
 		update();
+		if (logic_ != nullptr)
+			logic_->update();
 		render();
 		netMng->send();
 		msgQueue->flushSend();

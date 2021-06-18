@@ -63,18 +63,21 @@ Entity *MessageQueue::netTypeSwitch(TypeMessage::NetType t)
     }
     case TypeMessage::NetBullet:
     {
-        Bullet* b = new Bullet();
+        Bullet *b = new Bullet();
         return b;
         break;
     }
     case TypeMessage::NetAsteroid:
     {
-        Asteroid* a = new Asteroid();
+        Asteroid *a = new Asteroid();
         return a;
         break;
     }
     default:
-        new DefaultEntity();
+    {
+        DefaultEntity *def = new DefaultEntity();
+        return def;
         break;
+    }
     }
 }
