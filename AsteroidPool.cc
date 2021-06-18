@@ -2,29 +2,21 @@
 #include "Bullet.h"
 
 using namespace std;
-AsteroidPool::AsteroidPool() : activeAsteroids(0), myAsteroids(), asteroidSize(10), asteroidIncrease(3), isClient_()
+AsteroidPool::AsteroidPool(SDLGame *game, EntityManager *mngr, MessageQueue *q, Resources::TextureId t, int id, int numAsteroits, bool client) : activeAsteroids(0), myAsteroids(), asteroidSize(10), asteroidIncrease(3), isClient_(client)
 {
+    for (int i = 0; i < NUM_ASTEROIDS; i++)
+    {
+        myAsteroids.push_back(new Asteroid(game, mngr, q, id + i, client, game->getTextureMngr()->getTexture(t)));
+        myAsteroids.back()->setInUse(false);
+        mngr->addEntity(myAsteroids.at(i));
+    }
     //Consigo el sonido
-    
-
     SDLGame::instance()->getAudioMngr()->loadSound(Resources::Explosion, "resources/sound/explosion.wav");
     WinWidth = SDLGame::instance()->getWindowWidth();
     WinHeight = SDLGame::instance()->getWindowHeight();
-}
-void AsteroidPool::init(SDLGame *game, EntityManager *mngr, MessageQueue *q, Resources::TextureId t, int id, int numAsteroits, bool client){
-     isClient_=client;
-     for (int i = 0; i < NUM_ASTEROIDS; i++)
-    {
-        myAsteroids.push_back(new Asteroid(game, mngr, q, id + i, client,SDLGame::instance()->getTextureMngr()->getTexture(t)));
-        myAsteroids.back()->setInUse(false);
-    }
-    for (auto i : myAsteroids)
-    {
-        mngr->addEntity(i);
-    }
     generateAsteroids(5);
-   
 }
+
 AsteroidPool::~AsteroidPool()
 {
     for (Asteroid *i : myAsteroids)
