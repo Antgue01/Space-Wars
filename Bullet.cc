@@ -36,7 +36,7 @@ void Bullet::draw()
 
 void Bullet::to_bin()
 {
-	int size = 2 * sizeof(int) + 3 * sizeof(double);
+	int size = 2 * sizeof(int) + 5 * sizeof(double);
 	alloc_data(size);
 	memset(_data, 0, size);
 	char *aux = _data;
@@ -52,6 +52,10 @@ void Bullet::to_bin()
 	memcpy(aux, &auxDouble, sizeof(double));
 	aux += sizeof(double);
 	memcpy(aux, &rotation, sizeof(double));
+	aux += sizeof(double);
+	memcpy(aux, &w, sizeof(double));
+	aux += sizeof(double);
+	memcpy(aux, &h, sizeof(double));
 }
 
 int Bullet::from_bin(char *data)
@@ -61,7 +65,7 @@ int Bullet::from_bin(char *data)
 		std::cout << "Error on deserialization, empty object received\n";
 		return -1;
 	}
-	int size = 2 * sizeof(int) + 3 * sizeof(double);
+	int size = 2 * sizeof(int) + 5 * sizeof(double);
 
 	alloc_data(size);
 
@@ -80,6 +84,10 @@ int Bullet::from_bin(char *data)
 	pos.setY(auxDouble);
 	data += sizeof(double);
 	memcpy(&rotation, data, sizeof(double));
+	data += sizeof(double);
+	memcpy(&w, data, sizeof(double));
+	data += sizeof(double);
+	memcpy(&h, data, sizeof(double));
 }
 
 void Bullet::deliverMsg(Entity *msg)
@@ -90,6 +98,8 @@ void Bullet::deliverMsg(Entity *msg)
 		if (bu != nullptr)
 		{
 			{
+				w = bu->w;
+				h = bu->h;
 				inUse = bu->inUse;
 				pos = bu->pos;
 				rotation = bu->rotation;

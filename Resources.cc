@@ -14,7 +14,9 @@ vector<Resources::ImageInfo> Resources::images_ {
         {Player2,"./resources/images/player2.png"},
         {Heart,"./resources/images/heart.png"},
         {Asteroid,"./resources/images/asteroid.png"},
-        {Bullet,"./resources/images/whiterect.png"}
+        {Bullet,"./resources/images/whiterect.png"},
+        {PlasmaBall,"./resources/images/bolaPlasma.png"}
+		
 
 };
 

@@ -57,7 +57,7 @@ Entity *MessageQueue::netTypeSwitch(TypeMessage::NetType t)
     {
 
         Vessel *a = new Vessel();
-        a->getInput().assign(4, false);
+        a->getInput().assign(7, false);
         return a;
         break;
     }

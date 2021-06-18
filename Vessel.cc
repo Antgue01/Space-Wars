@@ -2,20 +2,23 @@
 #include "SDL_macros.h"
 #include "Message.h"
 
-Vessel::Vessel(SDLGame *game, EntityManager *mngr, int _id, Vector2D pos_, Texture *t_, SDL_Keycode right_, SDL_Keycode left_, SDL_Keycode up_, bool sendInp, bool checkkeys_, BulletsPool *bp) : Entity(game, mngr, TypeMessage::NetVessel, _id), speed(1), thrust(1), velocity(), pos(pos_), size(Vector2D(70, 70)), angle(0.0), t(t_),
-                                                                                                                                                                                                  right(right_), left(left_), up(up_), input(), server(sendInp), checkkeys(checkkeys_), startTime(0), bulletsPool(bp), lives(3), canPlay(true), initPos(pos_)
+Vessel::Vessel(SDLGame *game, EntityManager *mngr, int _id, Vector2D pos_, Texture *t_, SDL_Keycode right_, SDL_Keycode left_, SDL_Keycode up_, bool sendInp,
+               bool checkkeys_, BulletsPool *bp, PlasmaPool *pP) : Entity(game, mngr, TypeMessage::NetVessel, _id), speed(1), thrust(1), velocity(), pos(pos_), size(Vector2D(70, 70)),
+                                                                   angle(0.0), t(t_), right(right_), left(left_), up(up_), input(), server(sendInp), checkkeys(checkkeys_), startTime(0), bulletsPool(bp), plasmaPool(pP), lives(3),
+                                                                   canPlay(true), initPos(pos_)
 
 {
     tHeart = game->getTextureMngr()->getTexture(Resources::Heart);
     limitX = SDLGame::instance()->getWindowWidth();
     limitY = SDLGame::instance()->getWindowHeight();
-    input.assign(4, false);
+    input.assign(7, false);
     startTime = game_->getTime();
 }
 Vessel::Vessel() : Entity(nullptr, nullptr, TypeMessage::NetVessel, 0), t(nullptr), pos(), size(), angle(0), speed(),
-                   velocity(velocity), rotSpeed(), limitX(), limitY(), right(), left(), up(), thrust(), input(), server(false), checkkeys(false), lives(3), canPlay(true), initPos()
+                   velocity(velocity), rotSpeed(), limitX(), limitY(), right(), left(), up(), thrust(), input(), server(false), checkkeys(false),
+                   lives(3), canPlay(true), initPos(), plasmaPool(nullptr), bulletsPool(nullptr)
 {
-    input.assign(4, false);
+    input.assign(7, false);
 }
 
 Vessel::~Vessel()
@@ -23,6 +26,7 @@ Vessel::~Vessel()
     t = nullptr;
     bulletsPool = nullptr;
     tHeart = nullptr;
+    plasmaPool = nullptr;
 }
 
 void Vessel::update()
@@ -78,6 +82,13 @@ void Vessel::calculatePos(Vector2D &position, Vector2D &vel)
         Vector2D bulletVel = Vector2D(0, -1).rotate(angle) * 2;
         bulletsPool->shoot(bulletPos, bulletVel, 5, 20);
     }
+    else if (input[5])
+    {
+        plasmaPool->shoot(pos, 2, 1, 20, 20);
+    }
+    else if (input[6])
+    {
+    }
 }
 void Vessel::CheckKeys()
 {
@@ -107,9 +118,18 @@ void Vessel::CheckKeys()
             input[3] = true;
             startTime = game_->getTime(); //Reseteamos el tiempo de retroceso
         }
+        else if (ih->isKeyDown(SDLK_v) && game_->getTime() >= startTime + 250)
+        {
+            input[5] = true;
+            startTime = game_->getTime(); //Reseteamos el tiempo de retroceso
+        }
+        else if (ih->isKeyDown(SDLK_r))
+        {
+            input[6] = true;
+        }
     }
     else
-        input.assign(4, false);
+        input.assign(7, false);
 }
 void Vessel::Reset()
 {

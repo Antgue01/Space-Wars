@@ -16,6 +16,7 @@ public:
 		Heart,
 		Asteroid,
 		Bullet,
+		PlasmaBall,
 
 		// text
 		ServerWin,

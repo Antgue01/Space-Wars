@@ -2,7 +2,7 @@
 #include "Vessel.h"
 #include "AsteroidPool.h"
 #include "BulletsPool.h"
-#include "SpaceWars.h"
+#include "PlasmaPool.h"
 // GameLogic::GameLogic(SDLGame *game, EntityManager *mngr, int _id, Vessel *v1, Vessel *v2, AsteroidPool *ap, BulletsPool *bp, MessageQueue *q,bool isServer) :
 //  Entity(game, mngr, q, TypeMessage::NetGameLogic, _id), server(isServer), bulletsPool(bp),asteroidPool(ap)
 
@@ -10,7 +10,7 @@
 //     vessels.push_back(v1);
 //     vessels.push_back(v2);
 // }
-GameLogic::GameLogic(Vessel *v1, Vessel *v2, AsteroidPool *ap, BulletsPool *bp, SpaceWars *wars) : bulletsPool(bp), asteroidPool(ap), spaceWars(wars)
+GameLogic::GameLogic(Vessel *v1, Vessel *v2, AsteroidPool *ap, BulletsPool *bp, PlasmaPool *pP) : bulletsPool(bp), asteroidPool(ap), plasmaPool(pP)
 
 {
     vessels.push_back(v1);
@@ -24,7 +24,16 @@ void GameLogic::update()
     {
         //colision asteroide-bala
         vector<Bullet *> bulletsv = bulletsPool->getPool();
+        vector<Bullet *> plasmav = plasmaPool->getPool();
         for (Bullet *b : bulletsv)
+        {
+            if (b->getInUse() && as->getInUse() && Collisions::collidesWithRotation(b->getPos(), b->getW(), b->getH(), b->getRot(), as->GetPos(), as->GetWidth(), as->GetHeight(), as->GetAngle()))
+            {
+                bulletsPool->onCollision(b, as);
+                asteroidPool->onCollision(as, b);
+            }
+        }
+        for (Bullet *b : plasmav)
         {
             if (b->getInUse() && as->getInUse() && Collisions::collidesWithRotation(b->getPos(), b->getW(), b->getH(), b->getRot(), as->GetPos(), as->GetWidth(), as->GetHeight(), as->GetAngle()))
             {
@@ -56,11 +65,12 @@ void GameLogic::update()
                     ve2->LoseLife();
                     ve->Reset();
                     ve2->Reset();
+                    plasmaPool->disableAll();
                     asteroidPool->disableAll();
                     bulletsPool->disableAll();
                     if (ve->GetHealth() <= 0 || ve2->GetHealth() <= 0)
                     {
-                        SDLGame::instance()->getAudioMngr()->haltMusic(); 
+                        SDLGame::instance()->getAudioMngr()->haltMusic();
                         ve->setCanPlay(false);
                         ve2->setCanPlay(false);
                     }
@@ -68,7 +78,7 @@ void GameLogic::update()
                     else
                     {
 
-                        SDLGame::instance()->getAudioMngr()->pauseMusic(); 
+                        SDLGame::instance()->getAudioMngr()->pauseMusic();
                         asteroidPool->generateAsteroids(5);
                     }
                 }
@@ -79,6 +89,13 @@ void GameLogic::update()
                 if (b->getInUse() && Collisions::collidesWithRotation(b->getPos(), b->getW(), b->getH(), b->getRot(), ve->getPos(), ve->getW(), ve->getH(), ve->getRot()))
                 {
                     Hit(ve);
+                }
+            }
+            for (Bullet *b : plasmav)
+            {
+                if (b->getInUse() && Collisions::collidesWithRotation(b->getPos(), b->getW(), b->getH(), b->getRot(), ve->getPos(), ve->getW(), ve->getH(), ve->getRot()))
+                {
+                    // Hit(ve);
                 }
             }
         }
@@ -96,15 +113,15 @@ void GameLogic::Hit(Vessel *ve)
     ve->LoseLife();
     asteroidPool->disableAll();
     bulletsPool->disableAll();
+    plasmaPool->disableAll();
     ve->Reset();
     if (ve->GetHealth() <= 0)
     {
-        SDLGame::instance()->getAudioMngr()->haltMusic(); 
-        for (Vessel* vess : vessels)
+        SDLGame::instance()->getAudioMngr()->haltMusic();
+        for (Vessel *vess : vessels)
         {
             vess->setCanPlay(false);
         }
-        
     }
     else
     {
