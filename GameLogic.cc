@@ -95,7 +95,7 @@ void GameLogic::update()
             {
                 if (b->getInUse() && Collisions::collidesWithRotation(b->getPos(), b->getW(), b->getH(), b->getRot(), ve->getPos(), ve->getW(), ve->getH(), ve->getRot()))
                 {
-                    // Hit(ve);
+                    Hit(ve);
                 }
             }
         }

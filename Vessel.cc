@@ -3,7 +3,7 @@
 #include "Message.h"
 
 Vessel::Vessel(SDLGame *game, EntityManager *mngr, int _id, Vector2D pos_, Texture *t_, SDL_Keycode right_, SDL_Keycode left_, SDL_Keycode up_, bool sendInp,
-               bool checkkeys_, BulletsPool *bp, PlasmaPool *pP) : Entity(game, mngr, TypeMessage::NetVessel, _id), speed(1), thrust(1), velocity(), pos(pos_), size(Vector2D(70, 70)),
+               bool checkkeys_, BulletsPool *bp, PlasmaPool *pP) : Entity(game, mngr, TypeMessage::NetVessel, _id), speed(1), thrust(1), velocity(), pos(pos_), dimensions(Vector2D(70, 70)),
                                                                    angle(0.0), t(t_), right(right_), left(left_), up(up_), input(), server(sendInp), checkkeys(checkkeys_), startTime(0), bulletsPool(bp), plasmaPool(pP), lives(3),
                                                                    canPlay(true), initPos(pos_)
 
@@ -14,7 +14,7 @@ Vessel::Vessel(SDLGame *game, EntityManager *mngr, int _id, Vector2D pos_, Textu
     input.assign(7, false);
     startTime = game_->getTime();
 }
-Vessel::Vessel() : Entity(nullptr, nullptr, TypeMessage::NetVessel, 0), t(nullptr), pos(), size(), angle(0), speed(),
+Vessel::Vessel() : Entity(nullptr, nullptr, TypeMessage::NetVessel, 0), t(nullptr), pos(), dimensions(), angle(0), speed(),
                    velocity(velocity), rotSpeed(), limitX(), limitY(), right(), left(), up(), thrust(), input(), server(false), checkkeys(false),
                    lives(3), canPlay(true), initPos(), plasmaPool(nullptr), bulletsPool(nullptr)
 {
@@ -78,13 +78,15 @@ void Vessel::calculatePos(Vector2D &position, Vector2D &vel)
     position.set(position + vel);
     if (input[3])
     {
-        Vector2D bulletPos = pos + Vector2D(size.getX() / 2, size.getY() / 2) + Vector2D(0, -(size.getX() / 2 + 15.0)).rotate(angle);
+        Vector2D bulletPos = pos + Vector2D(dimensions.getX() / 2, dimensions.getY() / 2) + Vector2D(0, -(dimensions.getX() / 2 + 15.0)).rotate(angle);
         Vector2D bulletVel = Vector2D(0, -1).rotate(angle) * 2;
         bulletsPool->shoot(bulletPos, bulletVel, 5, 20);
     }
     else if (input[5])
     {
-        plasmaPool->shoot(pos, 2, 1, 20, 20);
+        double w = dimensions.getX();
+        double h = dimensions.getY();
+        plasmaPool->shoot(Vector2D(pos.getX() + (w / 3), pos.getY() + (h / 2)), 2, w + (w / 6), h + (h / 6), 20, 20);
     }
     else if (input[6])
     {
@@ -139,7 +141,7 @@ void Vessel::Reset()
 }
 void Vessel::draw()
 {
-    SDL_Rect dest = {pos.getX(), pos.getY(), size.getX(), size.getY()};
+    SDL_Rect dest = {pos.getX(), pos.getY(), dimensions.getX(), dimensions.getY()};
     t->render(dest, angle);
 
     drawHearts();

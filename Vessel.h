@@ -31,8 +31,8 @@ public:
     void setCanPlay(bool b) { canPlay = b; }
     void Reset();
     inline Vector2D getPos() { return pos; }
-    inline double getW() { return size.getX(); }
-    inline double getH() { return size.getY(); }
+    inline double getW() { return dimensions.getX(); }
+    inline double getH() { return dimensions.getY(); }
     inline double getRot() { return angle; }
 
 private:
@@ -43,7 +43,7 @@ private:
 
     Vector2D pos;
     Vector2D initPos;
-    Vector2D size;
+    Vector2D dimensions;
     double angle, speed;
     Vector2D velocity;
     int thrust;

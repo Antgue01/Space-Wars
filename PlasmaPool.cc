@@ -14,7 +14,7 @@ PlasmaPool::PlasmaPool(SDLGame *game, EntityManager *mngr, int _id, Resources::T
     }
 }
 
-void PlasmaPool::shoot(Vector2D pos, double speed, double offset, double w, double h)
+void PlasmaPool::shoot(Vector2D pos, double speed, double offsetX,  double offsetY, double w, double h)
 {
     double angle = 0, delta = 360 / CIRCLE_SIZE;
     Vector2D auxPos, auxVel;
@@ -26,7 +26,7 @@ void PlasmaPool::shoot(Vector2D pos, double speed, double offset, double w, doub
         if (newBullet != nullptr)
         {
             newBullet->setInUse(true);
-            auxPos = Vector2D(pos.getX() +  offset* sin((M_PI * angle) / 180), pos.getY() + offset * cos((M_PI * angle) / 180));
+            auxPos = pos + Vector2D(offsetX * sin((M_PI * angle) / 180), offsetY * cos((M_PI * angle) / 180));
             auxVel = (auxPos - pos).normalize() * speed;
             newBullet->setPos(auxPos);
             newBullet->setVel(auxVel);

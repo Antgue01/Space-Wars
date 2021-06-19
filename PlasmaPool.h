@@ -20,7 +20,7 @@ public:
 
 
 	//"Crea" las balas cogiendolas del pool
-	void shoot(Vector2D pos,double speed, double offset, double w, double h);
+	void shoot(Vector2D pos,double speed, double offsetX,double offsetY, double w, double h);
 
 	//Desactiva todas las balas que estén en uso
 	void disableAll();
