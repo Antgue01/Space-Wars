@@ -22,7 +22,7 @@ public:
 	inline bool getInUse() { 
 		
 		return inUse; }
-	inline void setInUse(bool v) { inUse = v; }
+	inline virtual void setInUse(bool v) { inUse = v; }
 	inline int getId() { return id_; }
 	inline TypeMessage::NetType getType() { return myType_; }
 

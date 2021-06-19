@@ -3,7 +3,7 @@
 #include "Entity.h"
 class Bullet:public Entity
 {
-private:
+protected:
 	Vector2D pos;
 	Vector2D vel;
 	double w;

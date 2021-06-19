@@ -11,8 +11,6 @@ AsteroidPool::AsteroidPool(SDLGame *game, EntityManager *mngr, Resources::Textur
         myAsteroids.back()->setInUse(false);
         mngr->addEntity(myAsteroids.at(i));
     }
-    //Consigo el sonido
-    SDLGame::instance()->getAudioMngr()->loadSound(Resources::Explosion, "resources/sound/explosion.wav");
     WinWidth = SDLGame::instance()->getWindowWidth();
     WinHeight = SDLGame::instance()->getWindowHeight();
     generateAsteroids(5);
@@ -67,13 +65,13 @@ void AsteroidPool::generateAsteroids(int n)
                     pos.setX(WinWidth - 50);
                 }
             }
-            // Pongo la direccion a una posici�n aleatoria en el centro de la pantalla
+            // Pongo la direccion a una posicion aleatoria en el centro de la pantalla
             Vector2D vel;
             int randomx = r->nextInt(0, 100);
             int randomy = r->nextInt(0, 100);
             vel.setX((((WinWidth / 2) - 50) + randomx) - pos.getX());
             vel.setY((((WinHeight / 2) - 50) + randomy) - pos.getY());
-            vel = vel.normalize();
+            vel = vel.normalize()*0.5;
             ///////////////////////////////////////////////////////////
             int generacion = r->nextInt(1, 4);
             Asteroid *a = getObj();
@@ -109,8 +107,6 @@ void AsteroidPool::onCollision(Asteroid *a, Bullet *b)
 {
     if (!isClient_)
     {
-
-        SDLGame::instance()->getAudioMngr()->playChannel(Resources::Explosion, 0);
         // EL asteroide principal desaparece
         a->setInUse(false);
         activeAsteroids--;

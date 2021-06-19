@@ -6,12 +6,13 @@
 #include "Entity.h"
 #include "BulletsPool.h"
 #include "PlasmaPool.h"
+#include "BounceBulletsPool.h"
 
 class Vessel : public Entity
 {
 public:
     Vessel(SDLGame *game, EntityManager *mngr, int _id, Vector2D pos_, Texture *t_, SDL_Keycode right_, SDL_Keycode left_, SDL_Keycode up_, bool isServer, bool checkkeys_, BulletsPool *bp,
-    PlasmaPool* pP);
+    PlasmaPool* pP,BounceBulletsPool* bbp);
 
     Vessel();
 
@@ -89,6 +90,6 @@ private:
     int startTime;
     BulletsPool *bulletsPool;
     PlasmaPool *plasmaPool;
-
+    BounceBulletsPool* bounceBulletsPool;
     bool canPlay;
 };

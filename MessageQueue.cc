@@ -4,6 +4,20 @@
 #include "DefaultEntity.h"
 #include "Bullet.h"
 #include "Asteroid.h"
+#include "BounceBullet.h"
+
+
+MessageQueue::~MessageQueue()
+{
+    while (!_messagesToReceive.empty())
+        {
+            _messagesToReceive.pop();
+        }
+        while (!_messagesToSend.empty())
+        {
+            _messagesToSend.pop();
+        }
+}
 
 void MessageQueue::flushSend()
 {
@@ -30,7 +44,7 @@ void MessageQueue::init(std::list<Entity *> &entities)
         _entities.push_back((*it));
     }
 }
-void MessageQueue::receive()
+bool MessageQueue::receive()
 {
     CountMessage *count = new CountMessage(-1);
     if (_sendSocket->recv(*count) < 0)
@@ -42,14 +56,20 @@ void MessageQueue::receive()
             TypeMessage *typem = new TypeMessage();
             _sendSocket->recv(*typem);
 
-            Entity *seri = netTypeSwitch(typem->myType_);
+            Entity *seri = netTypeSwitch(typem->myType_,exit);
             delete typem;
+            if(exit)
+            {
+                delete seri;
+                return true;
+            }
             _sendSocket->recv(*seri);
             _messagesToReceive.push(seri);
         }
     delete count;
+    return false;
 }
-Entity *MessageQueue::netTypeSwitch(TypeMessage::NetType t)
+Entity *MessageQueue::netTypeSwitch(TypeMessage::NetType t,bool &exit)
 {
     switch (t)
     {
@@ -71,6 +91,26 @@ Entity *MessageQueue::netTypeSwitch(TypeMessage::NetType t)
     {
         Asteroid *a = new Asteroid();
         return a;
+        break;
+    }
+    case TypeMessage::NetBounceBullet:
+    {
+        BounceBullet *a = new BounceBullet();
+        return a;
+        break;
+    }
+    case TypeMessage::Logout:
+    {
+        while (!_messagesToReceive.empty())
+        {
+            _messagesToReceive.pop();
+        }
+        while (!_messagesToSend.empty())
+        {
+            _messagesToSend.pop();
+        }
+        exit=true;
+        return new DefaultEntity();
         break;
     }
     default:

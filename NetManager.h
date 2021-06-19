@@ -10,7 +10,7 @@ public:
     virtual ~NetManager(){}
     void init(std::list<Entity*>& ent);
     void send();
-    void recieve();
+    bool recieve();
 
 private:
     

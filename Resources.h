@@ -18,25 +18,20 @@ public:
 		PlasmaBall,
 		Shield,
 		Bullet,
+		Laser,
+		Space,
 
 		// text
 		ServerWin,
-		ClientWin,
-		ServerLose,
-		ClientLose
+		ClientWin
 	};
 
 	enum AudioId : std::size_t {
-		// music
-		ImperialMarch,
 
-		// sound effects
-		GunShoot,
-		Explosion
 	};
 
 	enum FontId : std::size_t {
-		ARIAL16, ARIAL24,
+		ARIAL24
 	};
 
 	struct FontInfo {

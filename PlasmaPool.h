@@ -12,7 +12,6 @@ class PlasmaPool {
 private:
     std::vector<Bullet *> myBullets;
 
-
 public:
 	PlasmaPool(SDLGame *game, EntityManager *mngr, int _id,Resources::TextureId _t,bool client);
     PlasmaPool();

@@ -1,21 +1,21 @@
 #pragma once
 #include "Entity.h"
-#include "Bullet.h"
+#include "BounceBullet.h"
 #include "Collisions.h"
 #include "SDLGame.h"
 #include "Texture.h"
 class Asteroid;
 class Vessel;
 #define NUM_BULLETS 20
-class BulletsPool {
+class BounceBulletsPool {
 private:
-    std::vector<Bullet *> myBullets;
-	SDLGame* g;
+    std::vector<BounceBullet *> myBullets;
+	void bounce(BounceBullet* b);
 
 public:
-	BulletsPool(SDLGame *game, EntityManager *mngr, int _id,Resources::TextureId _t,bool client);
-    BulletsPool();
-	virtual ~BulletsPool() {  }
+	BounceBulletsPool(SDLGame *game, EntityManager *mngr, int _id,Resources::TextureId _t,bool client);
+    BounceBulletsPool();
+	virtual ~BounceBulletsPool() {  }
 
 
 	//"Crea" una bala cogiendola del pool
@@ -23,12 +23,12 @@ public:
 
 	//Desactiva todas las balas que estén en uso
 	void disableAll();
-	Bullet* getObj();
+	BounceBullet* getObj();
 	//Comprueba si una bala y un asteroide colisonan
-	void onCollision(Bullet* b, Asteroid* a);
+	void onCollision(BounceBullet* b, Asteroid* a);
 	//Comprueba si una bala y un caza colisonan
-	void onCollision(Bullet* b, Vessel* ve);
+	void onCollision(BounceBullet* b, Vessel* ve);
 
 	//Getter del vector de balas de la pool
-	const vector<Bullet*>& getPool();
+	const vector<BounceBullet*>& getPool();
 };

@@ -21,11 +21,11 @@ void NetManager::send()
     }
 }
 
-void NetManager::recieve()
+bool NetManager::recieve()
 {
-    msgQueue->receive();
+    bool e = msgQueue->receive();
 
-    while (!msgQueue->getMsgToRecieve().empty())
+    while (!msgQueue->getMsgToRecieve().empty() && !e)
     {
         if(msgQueue==nullptr)std::cout<<"NULL\n";
         Entity* e = msgQueue->getMsgToRecieve().front();
@@ -38,4 +38,6 @@ void NetManager::recieve()
         delete e;
         msgQueue->getMsgToRecieve().pop();       
     }
+
+    return e;
 }

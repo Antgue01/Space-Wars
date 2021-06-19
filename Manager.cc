@@ -34,9 +34,5 @@ void EntityManager::draw()
 
 void EntityManager::addEntity(Entity *ent)
 {
-	// Entity* e = new Entity(game_,this);
-	// std::unique_ptr<Entity> uPtr( /*e*/ent );
-	// entities.emplace_back(std::move(uPtr));
-	entities.push_back(ent);
-	// return e;
+	entities.push_back(ent);	
 }

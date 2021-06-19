@@ -38,6 +38,8 @@ private:
     NetManager* netMng;
     GameLogic* logic_;
     bool exit_;
+    Texture* space;
+    SDL_Rect dest;
     
     const static int _WINDOW_WIDTH_ = 800;
     const static int _WINDOW_HEIGHT_ = 600;

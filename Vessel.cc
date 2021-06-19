@@ -2,9 +2,9 @@
 #include "SDL_macros.h"
 #include "Message.h"
 
-Vessel::Vessel(SDLGame *game, EntityManager *mngr, int _id, Vector2D pos_, Texture *t_, SDL_Keycode right_, SDL_Keycode left_, SDL_Keycode up_, bool sendInp, bool checkkeys_, BulletsPool *bp,PlasmaPool *pP) : Entity(game, mngr, TypeMessage::NetVessel, _id), speed(1), thrust(1), velocity(), pos(pos_), dimensions(Vector2D(70, 70)), angle(0.0), t(t_),
+Vessel::Vessel(SDLGame *game, EntityManager *mngr, int _id, Vector2D pos_, Texture *t_, SDL_Keycode right_, SDL_Keycode left_, SDL_Keycode up_, bool sendInp, bool checkkeys_, BulletsPool *bp,PlasmaPool *pP,BounceBulletsPool* bbp) : Entity(game, mngr, TypeMessage::NetVessel, _id), speed(1), thrust(1), velocity(), pos(pos_), dimensions(Vector2D(70, 70)), angle(0.0), t(t_),
                                                                                                                                                                                                   right(right_), left(left_), up(up_), input(), server(sendInp), checkkeys(checkkeys_), startTime(0), bulletsPool(bp), lives(3), canPlay(true), initPos(pos_),
-                                                                                                                                                                                                  activeShield(false),shieldHits(2),invecibility(false),ready(true),plasmaPool(pP)
+                                                                                                                                                                                                  activeShield(false),shieldHits(2),invecibility(false),ready(true),plasmaPool(pP),bounceBulletsPool(bbp)
 
 {
     tShield= game->getTextureMngr()->getTexture(Resources::Shield);
@@ -18,7 +18,7 @@ Vessel::Vessel(SDLGame *game, EntityManager *mngr, int _id, Vector2D pos_, Textu
 }
 Vessel::Vessel() : Entity(nullptr, nullptr, TypeMessage::NetVessel, 0), t(nullptr), pos(), dimensions(), angle(0), speed(),
                    velocity(velocity), rotSpeed(), limitX(), limitY(), right(), left(), up(), thrust(), input(), server(false), checkkeys(false),
-                   lives(3), canPlay(true), initPos(), plasmaPool(nullptr), bulletsPool(nullptr)
+                   lives(3), canPlay(true), initPos(), plasmaPool(nullptr), bulletsPool(nullptr),bounceBulletsPool(nullptr)
 {
     input.assign(7, false);
 }
@@ -81,19 +81,20 @@ void Vessel::calculatePos(Vector2D &position, Vector2D &vel)
     position.set(position + vel);
     if (input[3])
     {
-        Vector2D bulletPos = pos + Vector2D(dimensions.getX() / 2, dimensions.getY() / 2) + Vector2D(0, -(dimensions.getX() / 2 + 15.0)).rotate(angle);
+        Vector2D bulletPos = pos + Vector2D(dimensions.getX() / 2, dimensions.getY() / 2) + Vector2D(0, -(dimensions.getX() / 2 + 30.0)).rotate(angle);
         Vector2D bulletVel = Vector2D(0, -1).rotate(angle) * 2;
         bulletsPool->shoot(bulletPos, bulletVel, 5, 20);
     }
     else if(input[4])
     {
-        activeShield=true;
-        invecibility=false;
-        shieldHits=2;
+        if(ready)
+        {
+            activeShield=true;
+            invecibility=false;
+            shieldHits=2;
+        }
+        
     }
-
-    
-
     else if (input[5])
     {
         double w = dimensions.getX();
@@ -102,6 +103,9 @@ void Vessel::calculatePos(Vector2D &position, Vector2D &vel)
     }
     else if (input[6])
     {
+        Vector2D bulletPos = pos + Vector2D(dimensions.getX() / 2, dimensions.getY() / 2) + Vector2D(0, -(dimensions.getX() / 2 + 30.0)).rotate(angle);
+        Vector2D bulletVel = Vector2D(0, -1).rotate(angle) * 2;
+        bounceBulletsPool->shoot(bulletPos, bulletVel, 5, 20);
     }
 }
 void Vessel::CheckKeys()
@@ -132,19 +136,20 @@ void Vessel::CheckKeys()
             input[3] = true;
             startTime = game_->getTime(); //Reseteamos el tiempo de retroceso
         }
+        else
+        if (!activeShield && ih->isKeyDown(SDLK_m) )
+        {
+            input[4] = true;          
+        }
         else if (ih->isKeyDown(SDLK_v) && game_->getTime() >= startTime + 250)
         {
             input[5] = true;
             startTime = game_->getTime(); //Reseteamos el tiempo de retroceso
         }
-        else if (ih->isKeyDown(SDLK_r))
+        else if (ih->isKeyDown(SDLK_r) && game_->getTime() >= startTime + 250)
         {
             input[6] = true;
-        }
-       else
-        if (!activeShield && ih->isKeyDown(SDLK_m) )
-        {
-            input[4] = true;          
+            startTime = game_->getTime(); //Reseteamos el tiempo de retroceso
         }
     }
     else

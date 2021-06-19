@@ -4,6 +4,7 @@
 #include "BulletsPool.h"
 #include "Bullet.h"
 #include "PlasmaPool.h"
+#include "BounceBulletsPool.h"
 // GameLogic::GameLogic(SDLGame *game, EntityManager *mngr, int _id, Vessel *v1, Vessel *v2, AsteroidPool *ap, BulletsPool *bp, MessageQueue *q,bool isServer) :
 //  Entity(game, mngr, q, TypeMessage::NetGameLogic, _id), server(isServer), bulletsPool(bp),asteroidPool(ap)
 
@@ -11,7 +12,7 @@
 //     vessels.push_back(v1);
 //     vessels.push_back(v2);
 // }
-GameLogic::GameLogic(Vessel *v1, Vessel *v2, AsteroidPool *ap, BulletsPool *bp, PlasmaPool *pP) : bulletsPool(bp), asteroidPool(ap), plasmaPool(pP)
+GameLogic::GameLogic(Vessel *v1, Vessel *v2, AsteroidPool *ap, BulletsPool *bp, PlasmaPool *pP,BounceBulletsPool* bbp) : bulletsPool(bp), asteroidPool(ap), plasmaPool(pP),bounceBulletsPool(bbp)
 
 {
     vessels.push_back(v1);
@@ -26,6 +27,8 @@ void GameLogic::update()
         //colision asteroide-bala
         vector<Bullet *> bulletsv = bulletsPool->getPool();
         vector<Bullet *> plasmav = plasmaPool->getPool();
+        vector<BounceBullet *> bouncev = bounceBulletsPool->getPool();
+
         for (Bullet *b : bulletsv)
         {
             if (b->getInUse() && as->getInUse() && Collisions::collidesWithRotation(b->getPos(), b->getW(), b->getH(), b->getRot(), as->GetPos(), as->GetWidth(), as->GetHeight(), as->GetAngle()))
@@ -41,7 +44,16 @@ void GameLogic::update()
                 bulletsPool->onCollision(b, as);
                 asteroidPool->onCollision(as, b);
             }
-        }/*
+        }
+        for (BounceBullet *b : bouncev)
+        {
+            if (b->getInUse() && as->getInUse() && Collisions::collidesWithRotation(b->getPos(), b->getW(), b->getH(), b->getRot(), as->GetPos(), as->GetWidth(), as->GetHeight(), as->GetAngle()))
+            {
+                bounceBulletsPool->onCollision(b, as);
+                asteroidPool->onCollision(as, b);
+            }
+        }
+        
         for (Vessel *ve : vessels)
         {
 
@@ -53,7 +65,7 @@ void GameLogic::update()
                 Hit(ve);
                 
             }
-        }*/
+        }
         for (Vessel *ve : vessels)
         {
 
@@ -81,6 +93,7 @@ void GameLogic::update()
                    
                     plasmaPool->disableAll();
                     bulletsPool->disableAll();
+                    bounceBulletsPool->disableAll();
                     if (ve->GetHealth() <= 0 || ve2->GetHealth() <= 0)
                     {
                         SDLGame::instance()->getAudioMngr()->haltMusic();
@@ -110,6 +123,14 @@ void GameLogic::update()
                     Hit(ve,b);
                 }
             }
+            for (BounceBullet *b : bouncev)
+            {
+                if (b->getInUse() && Collisions::collidesWithRotation(b->getPos(), b->getW(), b->getH(), b->getRot(), ve->getPos(), ve->getW(), ve->getH(), ve->getRot()))
+                {
+                    Hit(ve,b);
+                    if(ve->getActiveShield())bounceBulletsPool->onCollision(b, ve);
+                }
+            }
         }
     }
 }
@@ -125,7 +146,13 @@ void GameLogic::Hit(Vessel *ve,Bullet* b)
     if(ve->getActiveShield())
     {
         ve->reduceShieldHits();
-        if(b!=nullptr)b->setInUse(false);
+        if(b!=nullptr)
+        {
+            BounceBullet* bb = static_cast<BounceBullet*>(b);
+            if(bb==nullptr || !bb->getCanBounce()) b->setInUse(false);
+
+            
+        }
     }
     else
     {
@@ -135,10 +162,10 @@ void GameLogic::Hit(Vessel *ve,Bullet* b)
         asteroidPool->disableAll();
         bulletsPool->disableAll();
         plasmaPool->disableAll();
-    
+        bounceBulletsPool->disableAll();
+
         if (ve->GetHealth() <= 0)
-        {
-            SDLGame::instance()->getAudioMngr()->haltMusic(); 
+        {           
             for (Vessel* vess : vessels)
             {
                 vess->setCanPlay(false);
@@ -147,7 +174,6 @@ void GameLogic::Hit(Vessel *ve,Bullet* b)
         }
         else
         {
-            SDLGame::instance()->getAudioMngr()->pauseMusic();
             asteroidPool->generateAsteroids(5);
         }
     }    
