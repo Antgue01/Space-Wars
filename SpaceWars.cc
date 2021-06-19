@@ -35,6 +35,7 @@ SpaceWars::~SpaceWars()
 
 void SpaceWars::initGameClient(const char *host, const char *port)
 {
+	//creamos las entidades del juego
 	game_ = SDLGame::init("client", _WINDOW_WIDTH_, _WINDOW_HEIGHT_);
 
 	entityManager_ = new EntityManager(game_);
@@ -53,20 +54,23 @@ void SpaceWars::initGameClient(const char *host, const char *port)
 	VesselWinManager *winMngr = new VesselWinManager(game_, entityManager_, 34, player1, player2);
 	entityManager_->addEntity(winMngr);
 
+	//mandamos un mensaje al servidor para logearnos
 	LoginMessage msg;
 	serverSd = new Socket(host, port);
 	serverSd->send(msg, *serverSd);
+	//como somos clientes todo lo mandamos y recibimos por medio del servidor
 	clientSd=nullptr;
 	msgQueue = new MessageQueue(serverSd, serverSd, true);
+	//la lógica solo la actualiza el servidor
 	logic_ = nullptr;
 
-	msgQueue->init(entityManager_->getEntities());
 	netMng = new NetManager(msgQueue);
 	netMng->init(entityManager_->getEntities());
 }
 
 void SpaceWars::initServer(const char *host, const char *port)
 {
+	//creamos el juego y sus entidades
 	game_ = SDLGame::init("server", _WINDOW_WIDTH_, _WINDOW_HEIGHT_);
 
 	entityManager_ = new EntityManager(game_);
@@ -88,14 +92,14 @@ void SpaceWars::initServer(const char *host, const char *port)
 
 	entityManager_->addEntity(winMngr);
 	
+	//creamos el servidor
 	serverSd = new Socket(host, port);
 	serverSd->bind();
-
+	//recibimos el login del cliente y nos lo guardamos
 	LoginMessage msg;
 	serverSd->recv(msg, clientSd);
 
 	msgQueue = new MessageQueue(clientSd, serverSd, false);
-	msgQueue->init(entityManager_->getEntities());
 
 	netMng = new NetManager(msgQueue);
 	netMng->init(entityManager_->getEntities());
@@ -116,7 +120,8 @@ void SpaceWars::closeGame()
 void SpaceWars::start()
 {
 	exit_ = false;
-
+	//si somos el cliente mandamos el estado del juego para que empiece el bucle,
+	//que para ambos es recibir -> coger input -> actualizar -> pintar -> enviar
 	if (c)
 	{
 		netMng->send();

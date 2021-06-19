@@ -13,6 +13,7 @@ void NetManager::init(std::list<Entity*>& ent)
 
 void NetManager::send()
 {
+    //para cada entidad añade a la cola un mensaje con el tipo y otro con la propia entidad
     for(auto& e : entities)
     {
         TypeMessage *typem = new TypeMessage(e.second->getType());
@@ -24,7 +25,7 @@ void NetManager::send()
 bool NetManager::recieve()
 {
     bool e = msgQueue->receive();
-
+    //cogemos cada mensaje de la cola y se lo hacemos llegar a la entidad correspondiente
     while (!msgQueue->getMsgToRecieve().empty() && !e)
     {
         if(msgQueue==nullptr)std::cout<<"NULL\n";

@@ -1,7 +1,7 @@
 #pragma once
 #include <queue>
 #include "Socket.h"
-#include "CountMessage.h"
+#include "Message.h"
 #include "Entity.h"
 #include "Serializable.h"
 

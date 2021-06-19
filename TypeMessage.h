@@ -5,7 +5,7 @@
 
 class TypeMessage : public Serializable
 {
-
+//Mensaje que contiene el tipo
 public:
     enum NetType : uint
     {
@@ -24,6 +24,4 @@ public:
     virtual void to_bin();
     virtual int from_bin(char *bobj);
 
-private:
-    int a = 0;
 };

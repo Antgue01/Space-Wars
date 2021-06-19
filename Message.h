@@ -1,7 +1,7 @@
 #pragma once
 #include "Socket.h"
 #include "Serializable.h"
-
+//clase para enviar un serializable
 class Message
 {
 public:
@@ -13,7 +13,7 @@ public:
 private:
     Serializable *_obj;
 };
-
+//Serializable que tiene el número de mensajes que se enviarán
 class CountMessage : public Serializable
 {
 private:
