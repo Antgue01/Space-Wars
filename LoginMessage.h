@@ -1,19 +1,20 @@
 #pragma once
 #include <queue>
 #include "Socket.h"
-#include "Message.h"
+#include "CountMessage.h"
 #include "Entity.h"
 #include "Serializable.h"
+
+//Mensaje inicial para identificar al cliente por parte del servidor
 
 class LoginMessage : public Serializable
 {
 
 public:
-    LoginMessage(int b=0):a(b){}
+    LoginMessage(){}
     
 
     virtual void to_bin();
     virtual int from_bin(char *bobj);
-    int a;
-private:
+
 };

@@ -8,12 +8,10 @@ class Bullet;
 class PlasmaPool;
 class BounceBulletsPool;
 
-
+//Gestiona las colisiones entre entidades
 class GameLogic
 {
 public:
-    // GameLogic(SDLGame *game = nullptr, EntityManager *mngr = nullptr, int _id = 0, Vessel *v1 = nullptr, Vessel *v2 = nullptr, AsteroidPool *ap = nullptr, BulletsPool *bp = nullptr,
-    //           MessageQueue *q = nullptr, bool isServer = false);
 
     GameLogic(Vessel *v1 , Vessel *v2 , AsteroidPool *ap , BulletsPool *bp,PlasmaPool* pP,BounceBulletsPool* bbp);
     ~GameLogic();

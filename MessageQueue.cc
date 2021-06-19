@@ -1,5 +1,5 @@
 #include "MessageQueue.h"
-#include "CountMessage.h"
+#include "Message.h"
 #include "Vessel.h"
 #include "DefaultEntity.h"
 #include "Bullet.h"
@@ -10,13 +10,13 @@
 MessageQueue::~MessageQueue()
 {
     while (!_messagesToReceive.empty())
-        {
-            _messagesToReceive.pop();
-        }
-        while (!_messagesToSend.empty())
-        {
-            _messagesToSend.pop();
-        }
+    {
+        _messagesToReceive.pop();
+    }
+    while (!_messagesToSend.empty())
+    {
+        _messagesToSend.pop();
+    }
 }
 
 void MessageQueue::flushSend()

@@ -5,7 +5,7 @@ void LoginMessage::to_bin()
     int size = sizeof(int);
     alloc_data(size);
     memset(_data, 0, size);
-    memcpy(_data, &a, sizeof(int));
+    
 }
 int LoginMessage::from_bin(char *bobj)
 {
@@ -17,8 +17,5 @@ int LoginMessage::from_bin(char *bobj)
     int size = sizeof(int);
     alloc_data(size);
     memcpy(static_cast<void *>(_data), bobj, size);
-
-    char tmp;
-    memcpy(&tmp,bobj,sizeof(int));
-    a=tmp;
+ 
 }

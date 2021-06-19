@@ -2,8 +2,9 @@
 #include "Entity.h"
 #include "MessageQueue.h"
 
-class DefaultEntity
-    : public Entity
+//Entidad que se crea por defecto por si se pierde algun mensaje
+
+class DefaultEntity: public Entity   
 {
 public:
     DefaultEntity();

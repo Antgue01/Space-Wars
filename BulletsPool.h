@@ -10,7 +10,6 @@ class Vessel;
 class BulletsPool {
 private:
     std::vector<Bullet *> myBullets;
-	SDLGame* g;
 
 public:
 	BulletsPool(SDLGame *game, EntityManager *mngr, int _id,Resources::TextureId _t,bool client);
