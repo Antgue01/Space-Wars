@@ -1,5 +1,5 @@
 #include "MessageQueue.h"
-#include "Message.h"
+#include "CountMessage.h"
 #include "Vessel.h"
 #include "DefaultEntity.h"
 #include "Bullet.h"
