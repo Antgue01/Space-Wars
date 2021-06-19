@@ -2,17 +2,19 @@
 #include "SDL_macros.h"
 #include "Message.h"
 
-Vessel::Vessel(SDLGame *game, EntityManager *mngr, int _id, Vector2D pos_, Texture *t_, SDL_Keycode right_, SDL_Keycode left_, SDL_Keycode up_, bool sendInp,
-               bool checkkeys_, BulletsPool *bp, PlasmaPool *pP) : Entity(game, mngr, TypeMessage::NetVessel, _id), speed(1), thrust(1), velocity(), pos(pos_), dimensions(Vector2D(70, 70)),
-                                                                   angle(0.0), t(t_), right(right_), left(left_), up(up_), input(), server(sendInp), checkkeys(checkkeys_), startTime(0), bulletsPool(bp), plasmaPool(pP), lives(3),
-                                                                   canPlay(true), initPos(pos_)
+Vessel::Vessel(SDLGame *game, EntityManager *mngr, int _id, Vector2D pos_, Texture *t_, SDL_Keycode right_, SDL_Keycode left_, SDL_Keycode up_, bool sendInp, bool checkkeys_, BulletsPool *bp,PlasmaPool *pP) : Entity(game, mngr, TypeMessage::NetVessel, _id), speed(1), thrust(1), velocity(), pos(pos_), dimensions(Vector2D(70, 70)), angle(0.0), t(t_),
+                                                                                                                                                                                                  right(right_), left(left_), up(up_), input(), server(sendInp), checkkeys(checkkeys_), startTime(0), bulletsPool(bp), lives(3), canPlay(true), initPos(pos_),
+                                                                                                                                                                                                  activeShield(false),shieldHits(2),invecibility(false),ready(true),plasmaPool(pP)
 
 {
+    tShield= game->getTextureMngr()->getTexture(Resources::Shield);
     tHeart = game->getTextureMngr()->getTexture(Resources::Heart);
     limitX = SDLGame::instance()->getWindowWidth();
     limitY = SDLGame::instance()->getWindowHeight();
     input.assign(7, false);
     startTime = game_->getTime();
+    shieldTime = game_->getTime();
+    readyTime = game_->getTime();
 }
 Vessel::Vessel() : Entity(nullptr, nullptr, TypeMessage::NetVessel, 0), t(nullptr), pos(), dimensions(), angle(0), speed(),
                    velocity(velocity), rotSpeed(), limitX(), limitY(), right(), left(), up(), thrust(), input(), server(false), checkkeys(false),
@@ -26,7 +28,6 @@ Vessel::~Vessel()
     t = nullptr;
     bulletsPool = nullptr;
     tHeart = nullptr;
-    plasmaPool = nullptr;
 }
 
 void Vessel::update()
@@ -40,7 +41,9 @@ void Vessel::update()
         if (server)
         {
             calculatePos(pos, velocity);
+            manageShield();
         }
+
     }
 }
 void Vessel::calculatePos(Vector2D &position, Vector2D &vel)
@@ -82,6 +85,15 @@ void Vessel::calculatePos(Vector2D &position, Vector2D &vel)
         Vector2D bulletVel = Vector2D(0, -1).rotate(angle) * 2;
         bulletsPool->shoot(bulletPos, bulletVel, 5, 20);
     }
+    else if(input[4])
+    {
+        activeShield=true;
+        invecibility=false;
+        shieldHits=2;
+    }
+
+    
+
     else if (input[5])
     {
         double w = dimensions.getX();
@@ -129,6 +141,11 @@ void Vessel::CheckKeys()
         {
             input[6] = true;
         }
+       else
+        if (!activeShield && ih->isKeyDown(SDLK_m) )
+        {
+            input[4] = true;          
+        }
     }
     else
         input.assign(7, false);
@@ -143,6 +160,11 @@ void Vessel::draw()
 {
     SDL_Rect dest = {pos.getX(), pos.getY(), dimensions.getX(), dimensions.getY()};
     t->render(dest, angle);
+    if(activeShield)
+    {
+        
+        tShield->render(dest,angle);
+    }
 
     drawHearts();
 }
@@ -174,16 +196,41 @@ int Vessel::GetHealth()
     return lives;
 }
 
+void Vessel::manageShield()
+{
+
+    if(!activeShield)
+    {
+
+        if(!ready && game_->getTime()>= readyTime+2000)
+        {
+            ready=true;
+            readyTime = game_->getTime();
+        }
+
+
+    }
+    else if( invecibility)
+    {
+        if(game_->getTime()>= shieldTime+500)
+        {
+            invecibility=false;
+            shieldTime = game_->getTime();
+        }
+    }
+   
+}
+
 void Vessel::to_bin()
 {
-    int size = sizeof(int) * 7 + sizeof(double) * 3;
+    int size = sizeof(int) * 11 + sizeof(double) * 3;
     alloc_data(size);
     memset(_data, 0, size);
     char *aux = _data;
     memcpy(aux, &id_, sizeof(int));
     aux += sizeof(int);
     int auxBool;
-    for (size_t i = 0; i < 4; i++)
+    for (size_t i = 0; i < 7; i++)
     {
         auxBool = input.at(i);
         memcpy(aux, &auxBool, sizeof(int));
@@ -193,6 +240,8 @@ void Vessel::to_bin()
     memcpy(aux, &lives, sizeof(int));
     aux += sizeof(int);
     memcpy(aux, &canPlay, sizeof(int));
+    aux += sizeof(int);
+    memcpy(aux, &activeShield, sizeof(int));
     aux += sizeof(int);
 
     double auxD = pos.getX();
@@ -212,7 +261,7 @@ int Vessel::from_bin(char *data)
         std::cout << "Error on deserialization, empty object received\n";
         return -1;
     }
-    int size = sizeof(int) * 7 + 3 * sizeof(double);
+    int size = sizeof(int) * 11 + 3 * sizeof(double);
 
     alloc_data(size);
 
@@ -220,7 +269,7 @@ int Vessel::from_bin(char *data)
     memcpy(&id_, data, sizeof(int));
     data += sizeof(int);
     int auxBool;
-    for (size_t i = 0; i < 4; i++)
+    for (size_t i = 0; i < 7; i++)
     {
         memcpy(&auxBool, data, sizeof(int));
         input.at(i) = auxBool;
@@ -230,6 +279,8 @@ int Vessel::from_bin(char *data)
     memcpy(&lives, data, sizeof(int));
     data += sizeof(int);
     memcpy(&canPlay, data, sizeof(int));
+    data += sizeof(int);
+    memcpy(&activeShield, data, sizeof(int));
     data += sizeof(int);
 
     double auxD;
@@ -251,6 +302,7 @@ void Vessel::deliverMsg(Entity *msg)
         input = v->input;
         if (!server)
         {
+            activeShield = v->activeShield;
             canPlay = v->canPlay;
             lives = v->lives;
             pos = v->pos;

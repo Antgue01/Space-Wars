@@ -1,5 +1,6 @@
 #include "AsteroidPool.h"
 #include "Bullet.h"
+#include "Vessel.h"
 
 using namespace std;
 AsteroidPool::AsteroidPool(SDLGame *game, EntityManager *mngr, Resources::TextureId t, int id, int numAsteroits, bool client) : activeAsteroids(0), myAsteroids(), asteroidSize(10), asteroidIncrease(3), isClient_(client)
@@ -147,6 +148,14 @@ void AsteroidPool::onCollision(Asteroid *a, Bullet *b)
         }
     }
 }
+
+
+void AsteroidPool::onCollision(Asteroid *a, Vessel *b)
+{
+
+    a->SetVel(a->GetVel()*-1);
+}
+
 Asteroid *AsteroidPool::getObj()
 {
     int i = 0;

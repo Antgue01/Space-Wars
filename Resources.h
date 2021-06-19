@@ -15,8 +15,9 @@ public:
 		Player2,
 		Heart,
 		Asteroid,
-		Bullet,
 		PlasmaBall,
+		Shield,
+		Bullet,
 
 		// text
 		ServerWin,

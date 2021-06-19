@@ -3,6 +3,7 @@
 #include "Asteroid.h"
 #include <array>
 class Bullet;
+class Vessel;
 #include "Vector2D.h"
 #define NUM_ASTEROIDS 30
 class AsteroidPool
@@ -23,6 +24,7 @@ public:
     void generateAsteroids(int n);
     void disableAll();
     void onCollision(Asteroid *a, Bullet *b);
+     void onCollision(Asteroid *a, Vessel *v);
     int getNumOfAsteroids() { return activeAsteroids; }
     std::vector<Asteroid *> getPool() { return myAsteroids; }
 };

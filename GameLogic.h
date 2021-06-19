@@ -4,6 +4,7 @@
 class Vessel;
 class AsteroidPool;
 class BulletsPool;
+class Bullet;
 class PlasmaPool;
 class GameLogic
 {
@@ -22,5 +23,5 @@ private:
     PlasmaPool* plasmaPool;
     std::vector<Vessel *> vessels;
     bool server;
-    void Hit(Vessel* ve);
+    void Hit(Vessel* ve,Bullet* b=nullptr);
 };

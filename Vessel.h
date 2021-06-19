@@ -34,10 +34,27 @@ public:
     inline double getW() { return dimensions.getX(); }
     inline double getH() { return dimensions.getY(); }
     inline double getRot() { return angle; }
-
+    bool getActiveShield() {return activeShield;}
+    void reduceShieldHits()
+    {
+        if(!invecibility)
+        {
+            shieldHits--; 
+            invecibility=true;
+            if(shieldHits<=0)
+            {
+                shieldHits=0;
+                activeShield=false;
+                ready=false;
+                readyTime = game_->getTime();
+            }
+        }
+    }
+ 
 private:
     void CheckKeys();
     void drawHearts();
+    void manageShield();
 
     int lives;
 
@@ -49,6 +66,16 @@ private:
     int thrust;
     double rotSpeed;
     int limitX, limitY;
+
+    Texture* tShield;
+    bool activeShield;
+    int shieldTime;
+    int shieldHits;
+    bool invecibility;
+    bool ready;
+    int readyTime;
+
+    int recoveryTime;
 
     Texture *tHeart;
     Texture *t;
