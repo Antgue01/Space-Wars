@@ -120,9 +120,9 @@ void SpaceWars::closeGame()
 void SpaceWars::start()
 {
 	exit_ = false;
-	//si somos el cliente mandamos el estado del juego para que empiece el bucle,
+	//si somos el servidor mandamos el estado del juego para que empiece el bucle,
 	//que para ambos es recibir -> coger input -> actualizar -> pintar -> enviar
-	if (c)
+	if (!c)
 	{
 		netMng->send();
 		msgQueue->flushSend();

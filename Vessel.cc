@@ -2,12 +2,12 @@
 #include "SDL_macros.h"
 #include "Message.h"
 
-Vessel::Vessel(SDLGame *game, EntityManager *mngr, int _id, Vector2D pos_, Texture *t_, SDL_Keycode right_, SDL_Keycode left_, SDL_Keycode up_, bool sendInp, bool checkkeys_, BulletsPool *bp,PlasmaPool *pP,BounceBulletsPool* bbp) : Entity(game, mngr, TypeMessage::NetVessel, _id), speed(1), thrust(1), velocity(), pos(pos_), dimensions(Vector2D(70, 70)), angle(0.0), t(t_),
-                                                                                                                                                                                                  right(right_), left(left_), up(up_), input(), server(sendInp), checkkeys(checkkeys_), startTime(0), bulletsPool(bp), lives(3), canPlay(true), initPos(pos_),
-                                                                                                                                                                                                  activeShield(false),shieldHits(2),invecibility(false),ready(true),plasmaPool(pP),bounceBulletsPool(bbp)
+Vessel::Vessel(SDLGame *game, EntityManager *mngr, int _id, Vector2D pos_, Texture *t_, SDL_Keycode right_, SDL_Keycode left_, SDL_Keycode up_, bool sendInp, bool checkkeys_, BulletsPool *bp, PlasmaPool *pP, BounceBulletsPool *bbp) : Entity(game, mngr, TypeMessage::NetVessel, _id), speed(1), thrust(1), velocity(), pos(pos_), dimensions(Vector2D(70, 70)), angle(0.0), t(t_),
+                                                                                                                                                                                                                                          right(right_), left(left_), up(up_), input(), server(sendInp), checkkeys(checkkeys_), startTime(0), bulletsPool(bp), lives(3), canPlay(true), initPos(pos_),
+                                                                                                                                                                                                                                          activeShield(false), shieldHits(2), invecibility(false), ready(true), plasmaPool(pP), bounceBulletsPool(bbp)
 
 {
-    tShield= game->getTextureMngr()->getTexture(Resources::Shield);
+    tShield = game->getTextureMngr()->getTexture(Resources::Shield);
     tHeart = game->getTextureMngr()->getTexture(Resources::Heart);
     limitX = SDLGame::instance()->getWindowWidth();
     limitY = SDLGame::instance()->getWindowHeight();
@@ -18,7 +18,7 @@ Vessel::Vessel(SDLGame *game, EntityManager *mngr, int _id, Vector2D pos_, Textu
 }
 Vessel::Vessel() : Entity(nullptr, nullptr, TypeMessage::NetVessel, 0), t(nullptr), pos(), dimensions(), angle(0), speed(),
                    velocity(velocity), rotSpeed(), limitX(), limitY(), right(), left(), up(), thrust(), input(), server(false), checkkeys(false),
-                   lives(3), canPlay(true), initPos(), plasmaPool(nullptr), bulletsPool(nullptr),bounceBulletsPool(nullptr)
+                   lives(3), canPlay(true), initPos(), plasmaPool(nullptr), bulletsPool(nullptr), bounceBulletsPool(nullptr)
 {
     input.assign(7, false);
 }
@@ -43,7 +43,6 @@ void Vessel::update()
             calculatePos(pos, velocity);
             manageShield();
         }
-
     }
 }
 void Vessel::calculatePos(Vector2D &position, Vector2D &vel)
@@ -85,15 +84,14 @@ void Vessel::calculatePos(Vector2D &position, Vector2D &vel)
         Vector2D bulletVel = Vector2D(0, -1).rotate(angle) * 2;
         bulletsPool->shoot(bulletPos, bulletVel, 5, 20);
     }
-    else if(input[4])
+    else if (input[4])
     {
-        if(ready)
+        if (ready)
         {
-            activeShield=true;
-            invecibility=false;
-            shieldHits=2;
+            activeShield = true;
+            invecibility = false;
+            shieldHits = 2;
         }
-        
     }
     else if (input[5])
     {
@@ -136,10 +134,9 @@ void Vessel::CheckKeys()
             input[3] = true;
             startTime = game_->getTime(); //Reseteamos el tiempo de retroceso
         }
-        else
-        if (!activeShield && ih->isKeyDown(SDLK_m) )
+        else if (!activeShield && ih->isKeyDown(SDLK_m))
         {
-            input[4] = true;          
+            input[4] = true;
         }
         else if (ih->isKeyDown(SDLK_v) && game_->getTime() >= startTime + 250)
         {
@@ -165,10 +162,10 @@ void Vessel::draw()
 {
     SDL_Rect dest = {pos.getX(), pos.getY(), dimensions.getX(), dimensions.getY()};
     t->render(dest, angle);
-    if(activeShield)
+    if (activeShield)
     {
-        
-        tShield->render(dest,angle);
+
+        tShield->render(dest, angle);
     }
 
     drawHearts();
@@ -204,26 +201,23 @@ int Vessel::GetHealth()
 void Vessel::manageShield()
 {
 
-    if(!activeShield)
+    if (!activeShield)
     {
 
-        if(!ready && game_->getTime()>= readyTime+2000)
+        if (!ready && game_->getTime() >= readyTime + 2000)
         {
-            ready=true;
+            ready = true;
             readyTime = game_->getTime();
         }
-
-
     }
-    else if( invecibility)
+    else if (invecibility)
     {
-        if(game_->getTime()>= shieldTime+500)
+        if (game_->getTime() >= shieldTime + 500)
         {
-            invecibility=false;
+            invecibility = false;
             shieldTime = game_->getTime();
         }
     }
-   
 }
 
 void Vessel::to_bin()
@@ -304,8 +298,9 @@ void Vessel::deliverMsg(Entity *msg)
     Vessel *v = static_cast<Vessel *>(msg);
     if (v != nullptr)
     {
-        input = v->input;
-        if (!server)
+        if (server)
+            input = v->input;
+        else
         {
             activeShield = v->activeShield;
             canPlay = v->canPlay;
